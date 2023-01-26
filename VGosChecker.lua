@@ -1,17 +1,17 @@
 script_version("1.0")
 script_version_number(16)
 require "lib.moonloader"
-local sampev 		= require "lib.samp.events" -- // Евенты
-local imgui 		= require "imgui" -- // Подключение ImGui.
-local as_action 	= require("moonloader").audiostream_state -- // Состояние стрим музыки
-local encoding 		= require "encoding" -- // Кодировка
+local sampev 		= require "lib.samp.events" -- // ������
+local imgui 		= require "imgui" -- // ����������� ImGui.
+local as_action 	= require("moonloader").audiostream_state -- // ��������� ����� ������
+local encoding 		= require "encoding" -- // ���������
 encoding.default 	= "CP1251"
 u8 = encoding.UTF8
 
 local effil = require 'effil'
 
-local rx, ry 				= getScreenResolution() -- // Размер экрана
-local mainMenu				= imgui.ImBool(false) -- // Основное меню
+local rx, ry 				= getScreenResolution() -- // ������ ������
+local mainMenu				= imgui.ImBool(false) -- // �������� ����
 
 local currentNumOfHouses = { US = 0, AF = 0, RC = 0 }
 local lastCurrentNumOfHouses = { US = 0, AF = 0, RC = 0 }
@@ -37,52 +37,52 @@ local botTG = "5614538474:AAGOKPENb_fO-WFpkkrS_-Zr6vHPJt7DuDw"
 local dlstatus = require('moonloader').download_status
 
 function update()
-  local fpath = os.getenv('TEMP') .. '\\testing_version.json' -- куда будет качаться наш файлик для сравнения версии
-  downloadUrlToFile('https://raw.githubusercontent.com/vitomc1/hchecker/main/version.json', fpath, function(id, status, p1, p2) -- ссылку на ваш гитхаб где есть строчки которые я ввёл в теме или любой другой сайт
+  local fpath = os.getenv('TEMP') .. '\\testing_version.json' -- ���� ����� �������� ��� ������ ��� ��������� ������
+  downloadUrlToFile('https://raw.githubusercontent.com/vitomc1/hchecker/main/version.json', fpath, function(id, status, p1, p2) -- ������ �� ��� ������ ��� ���� ������� ������� � ���� � ���� ��� ����� ������ ����
     if status == dlstatus.STATUS_ENDDOWNLOADDATA then
-    local f = io.open(fpath, 'r') -- открывает файл
+    local f = io.open(fpath, 'r') -- ��������� ����
     if f then
-      local info = decodeJson(f:read('*a')) -- читает
+      local info = decodeJson(f:read('*a')) -- ������
       updatelink = info.updateurl
       if info and info.latest then
-        version = tonumber(info.latest) -- переводит версию в число
-        if version > tonumber(thisScript().version) then -- если версия больше чем версия установленная то...
-          lua_thread.create(goupdate) -- апдейт
-        else -- если меньше, то
-          update = false -- не даём обновиться
-          sampAddChatMessage('[GC]: {8be547}У вас и так последняя версия! Обновление отменено', -1)
+        version = tonumber(info.latest) -- ��������� ������ � �����
+        if version > tonumber(thisScript().version) then -- ���� ������ ������ ��� ������ ������������� ��...
+          lua_thread.create(goupdate) -- ������
+        else -- ���� ������, ��
+          update = false -- �� ���� ����������
+          sampAddChatMessage('[GC]: {8be547}� ��� � ��� ��������� ������! ���������� ��������', -1)
         end
       end
     end
   end
 end)
 end
---скачивание актуальной версии
-"[GC]: {8be547}Чекер домов. /gosmenu - основное меню, /gos - просмотр кол-ва домов, /gos [паркинги] [цена]", -1
+--���������� ���������� ������
+--"[GC]: {8be547}����� �����. /gosmenu - �������� ����, /gos - �������� ���-�� �����, /gos [��������] [����]", -1
 function goupdate()
-sampAddChatMessage('[GC]: {8be547}Обнаружено обновление. AutoReload может конфликтовать. Обновляюсь...', -1)
-sampAddChatMessage('[GC]: {8be547}Текущая версия: '..thisScript().version..". Новая версия: "..version, -1)
+sampAddChatMessage('[GC]: {8be547}���������� ����������. AutoReload ����� �������������. ����������...', -1)
+sampAddChatMessage('[GC]: {8be547}������� ������: '..thisScript().version..". ����� ������: "..version, -1)
 wait(300)
-downloadUrlToFile(updatelink, thisScript().path, function(id3, status1, p13, p23) -- качает ваш файлик с latest version
+downloadUrlToFile(updatelink, thisScript().path, function(id3, status1, p13, p23) -- ������ ��� ������ � latest version
   if status1 == dlstatus.STATUS_ENDDOWNLOADDATA then
-  sampAddChatMessage('[GC]: {8be547}Обновление завершено!', -1)
+  sampAddChatMessage('[GC]: {8be547}���������� ���������!', -1)
   thisScript():reload()
 end
 end)
 end
 
--- ВСЁ!
+-- �Ѩ!
 
 
 
--- // Если нет конфига - создаем
+-- // ���� ��� ������� - �������
 if not doesDirectoryExist(getWorkingDirectory().."/config") then
 	createDirectory(getWorkingDirectory().."/config")
 end
 if not doesDirectoryExist(getWorkingDirectory().."/config/gosChecker") then
 	createDirectory(getWorkingDirectory().."/config/gosChecker")
 end
--- // Нет файла с настройками - создаем
+-- // ��� ����� � ����������� - �������
 if not doesFileExist(getWorkingDirectory().."/config/gosChecker/settings.json") then
 	local fee = io.open(getWorkingDirectory().."/config/gosChecker/settings.json", "w")
 	fee:write(encodeJson({
@@ -92,7 +92,7 @@ if not doesFileExist(getWorkingDirectory().."/config/gosChecker/settings.json") 
 			volumeSound = 40,
 			activMessage = true,
 			colorMessage = 0xFF32CD32,
-			textMessage = "[GC]: {AA0000}ВНИМАНИЕ!{8be547} В {COUNTRY} слетел новый дом. При последней проверке было {FFFFFF}{LAST_COUNT} {8be547}домов, сейчас их {FFFFFF}{NOW_COUNT}",
+			textMessage = "[GC]: {AA0000}��������!{8be547} � {COUNTRY} ������ ����� ���. ��� ��������� �������� ���� {FFFFFF}{LAST_COUNT} {8be547}�����, ������ �� {FFFFFF}{NOW_COUNT}",
 			activPayday = false,
 			activMonitor = true,
 			posMonitorX = 200,
@@ -105,7 +105,7 @@ if not doesFileExist(getWorkingDirectory().."/config/gosChecker/settings.json") 
 	}))
 	io.close(fee)
 end
--- // Если есть - подключаем
+-- // ���� ���� - ����������
 if doesFileExist(getWorkingDirectory().."/config/gosChecker/settings.json") then
 	local fee = io.open(getWorkingDirectory().."/config/gosChecker/settings.json", "r")
 	if fee then
@@ -114,7 +114,7 @@ if doesFileExist(getWorkingDirectory().."/config/gosChecker/settings.json") then
 	end
 end
 
-local sliderVolume = imgui.ImFloat(tonumber(database["settings"]["volumeSound"])) -- // Слайдер звука
+local sliderVolume = imgui.ImFloat(tonumber(database["settings"]["volumeSound"])) -- // ������� �����
 
 local tableCheckbox = {
 	activScript = imgui.ImBool(database["settings"]["activScript"]),
@@ -150,13 +150,13 @@ function checkForNewHouses()
 				local text = text:gsub("{LAST_COUNT}", lastCurrentNumOfHouses[city])
 				local text = text:gsub("{NOW_COUNT}", currentNumOfHouses[city])
 				sampAddChatMessage(text, database["settings"]["colorMessage"])
-				local sendVk = "[GC]: В "..city.." слетел новый дом. При последней проверке было "..lastCurrentNumOfHouses[city].." домов, сейчас их "..currentNumOfHouses[city]..""
+				local sendVk = "[GC]: � "..city.." ������ ����� ���. ��� ��������� �������� ���� "..lastCurrentNumOfHouses[city].." �����, ������ �� "..currentNumOfHouses[city]..""
 
 				local _, id = sampGetPlayerIdByCharHandle(playerPed)
 				local ip = sampGetCurrentServerAddress()
 				if ip == "185.169.134.83" then
 					prefixTG = "RPG"
-					local sendTG = ""..prefixTG..":  В  '"..city.."'  слетел  дом.  Было:  "..lastCurrentNumOfHouses[city]..",  а  сейчас  -  "..currentNumOfHouses[city].."  |  "..os.date("Время:  %H:%M:%S  Дата: %d.%m.20%y").."     *Информация  от:  "..sampGetPlayerNickname(id)
+					local sendTG = ""..prefixTG..":  �  '"..city.."'  ������  ���.  ����:  "..lastCurrentNumOfHouses[city]..",  �  ������  -  "..currentNumOfHouses[city].."  |  "..os.date("�����:  %H:%M:%S  ����: %d.%m.20%y").."     *����������  ��:  "..sampGetPlayerNickname(id)
 					async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. maximTG .. "&text=" .. u8(sendTG), "", function (result)
 						sampAddChatMessage("maxTG+", -1)
 					end)
@@ -171,7 +171,7 @@ function checkForNewHouses()
 					end)
 				elseif ip == "185.169.134.84" then
 					prefixTG = "TRP1"
-					local sendTG = ""..prefixTG..":  В  '"..city.."'  слетел  дом.  Было:  "..lastCurrentNumOfHouses[city]..",  а  сейчас  -  "..currentNumOfHouses[city].."  |  "..os.date("Время:  %H:%M:%S  Дата: %d.%m.20%y").."     *Информация  от:  "..sampGetPlayerNickname(id)
+					local sendTG = ""..prefixTG..":  �  '"..city.."'  ������  ���.  ����:  "..lastCurrentNumOfHouses[city]..",  �  ������  -  "..currentNumOfHouses[city].."  |  "..os.date("�����:  %H:%M:%S  ����: %d.%m.20%y").."     *����������  ��:  "..sampGetPlayerNickname(id)
 					async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. maximTG .. "&text=" .. u8(sendTG), "", function (result)
 						sampAddChatMessage("maxTG+", -1)
 					end)
@@ -186,7 +186,7 @@ function checkForNewHouses()
 					end)
 				elseif ip == "185.169.134.85" then
 					prefixTG = "TRP2"
-					local sendTG = "??"..prefixTG..":  В  '"..city.."'  слетел  дом.  Было:  "..lastCurrentNumOfHouses[city]..",  а  сейчас  -  "..currentNumOfHouses[city].."  |  "..os.date("Время:  %H:%M:%S  Дата: %d.%m.20%y").."     *Информация  от:  "..sampGetPlayerNickname(id)
+					local sendTG = "??"..prefixTG..":  �  '"..city.."'  ������  ���.  ����:  "..lastCurrentNumOfHouses[city]..",  �  ������  -  "..currentNumOfHouses[city].."  |  "..os.date("�����:  %H:%M:%S  ����: %d.%m.20%y").."     *����������  ��:  "..sampGetPlayerNickname(id)
 					async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. maximTG .. "&text=" .. u8(sendTG), "", function (result)
 						sampAddChatMessage("maxTG+", -1)
 					end)
@@ -224,20 +224,20 @@ function checkForNewHouses()
 end
 
 function sampev.onServerMessage(color, text)
-	if text:find("Перед использованием данной возможности следует закрыть все активные диалоговые окна") then
+	if text:find("����� �������������� ������ ����������� ������� ������� ��� �������� ���������� ����") then
 		return false
 	end
-	if text:find("Вы не можете использовать статичные телефоны для звонков на эти номера.") then
+	if text:find("�� �� ������ ������������ ��������� �������� ��� ������� �� ��� ������.") then
 		return false
 	end
-	if text:find("Вы уже разговариваете по мобильному телефону.") then
+	if text:find("�� ��� �������������� �� ���������� ��������.") then
 		return false
 	end
 	lua_thread.create(function()
 		if database["settings"]["activPayday"] then
-			if text:find("Администрация проекта благодарит вас за то") then
+			if text:find("������������� ������� ���������� ��� �� ��") then
 				wait(0)
-				sampAddChatMessage("[GC]: {8be547}Поиск слетевших домов...", -1)
+				sampAddChatMessage("[GC]: {8be547}����� ��������� �����...", -1)
 				sampProcessChatInput("/gos 0 1-9000000")
 			end
 		end
@@ -246,8 +246,8 @@ end
 
 function sampev.onShowDialog(id, style, title, btn1, btn2, text)
 	if activationScript then
-		-- // Просмотр всех домов
-		if checkAllHouse[1] and id == 2110 and title:find("Поиск выставленных на продажу домов") then
+		-- // �������� ���� �����
+		if checkAllHouse[1] and id == 2110 and title:find("����� ������������ �� ������� �����") then
 			sampSendDialogResponse(2110, 1, 0, "")
 			checkAllHouse[1], checkAllHouse[2] = false, true
 			return false
@@ -265,7 +265,7 @@ function sampev.onShowDialog(id, style, title, btn1, btn2, text)
 
 			end
 			if gosCheckerMessage then
-				sampAddChatMessage(	"[GC]: {8be547}Количество домов в госе: US - {ffffff}" .. currentNumOfHouses.US .. "{8be547} | AF - {ffffff}" .. currentNumOfHouses.AF .. "{8be547} | RC - {ffffff}" .. currentNumOfHouses.RC, -1)
+				sampAddChatMessage(	"[GC]: {8be547}���������� ����� � ����: US - {ffffff}" .. currentNumOfHouses.US .. "{8be547} | AF - {ffffff}" .. currentNumOfHouses.AF .. "{8be547} | RC - {ffffff}" .. currentNumOfHouses.RC, -1)
 				gosCheckerMessage = false
 			end
 			checkForNewHouses()
@@ -274,19 +274,19 @@ function sampev.onShowDialog(id, style, title, btn1, btn2, text)
 			return false
 		end
 
-		-- // Поиск по данным
-		if checkInGosHouse[1] and id == 2110 and title:find("Поиск выставленных на продажу домов") then
+		-- // ����� �� ������
+		if checkInGosHouse[1] and id == 2110 and title:find("����� ������������ �� ������� �����") then
 			sampSendDialogResponse(2110, 1, 2, "")
 			checkInGosHouse[1], checkInGosHouse[2] = false, true
 			checkInGosViborGos = true
 			return false
 		end
-		if checkInGosHouse[2] and id == 2112 and title:find("Мастер поиска домов") then
+		if checkInGosHouse[2] and id == 2112 and title:find("������ ������ �����") then
 			sampSendDialogResponse(2112, 1, 1, "")
 			checkInGosHouse[2], checkInGosHouse[3] = false, true
 			return false
 		end
-		if checkInGosHouse[3] and id == 2112 and title:find("Мастер поиска домов") then
+		if checkInGosHouse[3] and id == 2112 and title:find("������ ������ �����") then
 			sampSendDialogResponse(2112, 1, 2, "")
 			checkInGosHouse[3], checkInGosHouse[4] = false, true
 			return false
@@ -321,21 +321,21 @@ function sampev.onShowDialog(id, style, title, btn1, btn2, text)
 				return false
 			end
 		end
-		if checkInGosHouse[8] and id == 2111 and text:find("По вашему запросу не найдено") then
-			sampAddChatMessage("[GC]: {8be547}По вашему запросу не найдено ни одного предложения о продаже.", -1)
+		if checkInGosHouse[8] and id == 2111 and text:find("�� ������ ������� �� �������") then
+			sampAddChatMessage("[GC]: {8be547}�� ������ ������� �� ������� �� ������ ����������� � �������.", -1)
 			sampSendDialogResponse(2111, 1, 0, "")
 			checkInGosHouse[8], checkInGosHouse[9], closeDialog = false, false, true
 			return false
 		end
-		if checkInGosHouse[9] and id == 2111 and text:find("По вашему запросу найдено") then
+		if checkInGosHouse[9] and id == 2111 and text:find("�� ������ ������� �������") then
 			local kolvoGosHouse = text:match("{fbec5d}(%d+){ffffff}")
 			sampSendDialogResponse(2111, 1, 0, "")
-			sampAddChatMessage("[GC]: {8be547}По вашему запросу найдено {FFFFFF}"..kolvoGosHouse.. "{8be547} предложений. Ближайшее к вам отмечено на радаре.", -1)
+			sampAddChatMessage("[GC]: {8be547}�� ������ ������� ������� {FFFFFF}"..kolvoGosHouse.. "{8be547} �����������. ��������� � ��� �������� �� ������.", -1)
 			checkInGosHouse[8], checkInGosHouse[9], closeDialog = false, false, true
 			return false
 		end
 
-		-- // Закрытие диалога /call realty
+		-- // �������� ������� /call realty
 		if closeDialog and id == 2110 then
 			sampSendDialogResponse(2110, 0, 0, "")
 			closeDialog = false
@@ -350,7 +350,7 @@ end
 function url_encode(str)
 	return string.gsub(string.gsub(str, "\\", "\\"), "([^%w])", char_to_hex)
 end
-function requestRunner() -- создание effil потока с функцией https запроса
+function requestRunner() -- �������� effil ������ � �������� https �������
 	return effil.thread(function(u, a)
 		local https = require 'ssl.https'
 		local ok, result = pcall(https.request, u, a)
@@ -362,7 +362,7 @@ function requestRunner() -- создание effil потока с функци�
 	end)
 end
 
-function threadHandle(runner, url, args, resolve, reject) -- обработка effil потока без блокировок
+function threadHandle(runner, url, args, resolve, reject) -- ��������� effil ������ ��� ����������
 	local t = runner(url, args)
 	local r = t:get(0)
 	while not r do
@@ -389,7 +389,7 @@ function async_http_request(url, args, resolve, reject)
 	end)
 end
 
--- // IMGUI окна
+-- // IMGUI ����
 function imgui.OnDrawFrame()
 	if mainMenu.v then
 		if database["settings"]["activScript"] then
@@ -401,7 +401,7 @@ function imgui.OnDrawFrame()
 		end
 		imgui.Begin(u8(" GOS Checker | Trinity GTA"), mainMenu, imgui.WindowFlags.NoCollapse + imgui.WindowFlags.NoResize)
 			imgui.BeginChild("#UP_PANEL", imgui.ImVec2(350, 35), true)
-				if imgui.Checkbox(u8(" Активация. Включить скрипт?"), tableCheckbox["activScript"]) then
+				if imgui.Checkbox(u8(" ���������. �������� ������?"), tableCheckbox["activScript"]) then
 					database["settings"]["activScript"] = tableCheckbox["activScript"].v
 					saveDataBase()
 				end
@@ -410,18 +410,18 @@ function imgui.OnDrawFrame()
 				imgui.BeginChild("##CENTER_PANEL", imgui.ImVec2(350, -1), true)
 					imgui.BeginChild("##timeWait", imgui.ImVec2(335, 35), true)
 						imgui.PushItemWidth(90)
-							if imgui.InputInt(u8(" Задержка между чеками (в сек.)"), tableImInt["timeWait"]) then
+							if imgui.InputInt(u8(" �������� ����� ������ (� ���.)"), tableImInt["timeWait"]) then
 								database["settings"]["timeWait"] = tableImInt["timeWait"].v * 1000
 								saveDataBase()
 							end
 						imgui.PopItemWidth()
 						imgui.SameLine()
 						imgui.Button("(?)", imgui.ImVec2(25, 20))
-						imgui.Hint(u8("Задержка при получении информации о текущих домах на сервере. Указывать в секундах"))
+						imgui.Hint(u8("�������� ��� ��������� ���������� � ������� ����� �� �������. ��������� � ��������"))
 					imgui.EndChild()
 					imgui.Spacing()
 
-					if imgui.Checkbox(u8(" Выводить мониторинг?"), tableCheckbox["activMonitor"]) then
+					if imgui.Checkbox(u8(" �������� ����������?"), tableCheckbox["activMonitor"]) then
 						database["settings"]["activMonitor"] = tableCheckbox["activMonitor"].v
 						saveDataBase()
 					end
@@ -435,32 +435,32 @@ function imgui.OnDrawFrame()
 							imgui.PopItemWidth()
 							imgui.SameLine()
 							imgui.Button("(?)", imgui.ImVec2(25, 20))
-							imgui.Hint(u8("Текст который будет выводится на экран для мониторинга. Используйте {AF}, {US}, {RC} - для вывода кол-ва домов в странах. Можно использовать цвета в формате {ЦВЕТ_HTML}. Пример белого цвета: {FFFFFF}"))
+							imgui.Hint(u8("����� ������� ����� ��������� �� ����� ��� �����������. ����������� {AF}, {US}, {RC} - ��� ������ ���-�� ����� � �������. ����� ������������ ����� � ������� {����_HTML}. ������ ������ �����: {FFFFFF}"))
 
 							imgui.PushItemWidth(150)
-								if imgui.InputText(u8(" Название шрифта"), tableInput["fontMonitor"]) then
+								if imgui.InputText(u8(" �������� ������"), tableInput["fontMonitor"]) then
 									database["settings"]["fontMonitor"] = tableInput["fontMonitor"].v
 									saveDataBase()
 									font = renderCreateFont(database["settings"]["fontMonitor"], tableImInt["sizeMonitor"], 5)
 								end
-								if imgui.InputInt(u8(" Размер шрифта"), tableImInt["sizeMonitor"]) then
+								if imgui.InputInt(u8(" ������ ������"), tableImInt["sizeMonitor"]) then
 									database["settings"]["sizeMonitor"] = tableImInt["sizeMonitor"].v
 									saveDataBase()
 									font = renderCreateFont(database["settings"]["fontMonitor"], database["settings"]["sizeMonitor"], 5)
 								end
 							imgui.PopItemWidth()
-							if imgui.Button(u8("Изменить положение мониторинга"), imgui.ImVec2(-1, 25)) then
+							if imgui.Button(u8("�������� ��������� �����������"), imgui.ImVec2(-1, 25)) then
 								changePos = true
 								mainMenu.v = false
 							end
 						imgui.EndChild()
 					end
 
-					if imgui.Checkbox(u8(" Проигровать звук?"), tableCheckbox["activSound"]) then
+					if imgui.Checkbox(u8(" ����������� ����?"), tableCheckbox["activSound"]) then
 						if not doesFileExist(getWorkingDirectory().."/config/gosChecker/sound.mp3") then
 							database["settings"]["activSound"] = false
 							saveDataBase()
-							sampAddChatMessage("[GS]: Не обнаружено файла sound.mp3. Добавьте файл по пути: /config/gosChecker/sound.mp3", database["settings"]["colorMessage"])
+							sampAddChatMessage("[GS]: �� ���������� ����� sound.mp3. �������� ���� �� ����: /config/gosChecker/sound.mp3", database["settings"]["colorMessage"])
 						else
 							loadSound = loadAudioStream(getWorkingDirectory().."/config/gosChecker/sound.mp3")
 							database["settings"]["activSound"] = tableCheckbox["activSound"].v
@@ -477,12 +477,12 @@ function imgui.OnDrawFrame()
 							imgui.PopItemWidth()
 							imgui.SameLine()
 							imgui.Button("(?)", imgui.ImVec2(25, 20))
-							imgui.Hint(u8("Громкость проигрования звука при слёте дома."))
+							imgui.Hint(u8("��������� ������������ ����� ��� ����� ����."))
 						imgui.EndChild()
 					end
 
 
-					if imgui.Checkbox(u8(" Выводить сообщение?"), tableCheckbox["activMessage"]) then
+					if imgui.Checkbox(u8(" �������� ���������?"), tableCheckbox["activMessage"]) then
 						database["settings"]["activMessage"] = tableCheckbox["activMessage"].v
 						saveDataBase()
 					end
@@ -496,18 +496,18 @@ function imgui.OnDrawFrame()
 							imgui.PopItemWidth()
 							imgui.SameLine()
 							imgui.Button("(?)", imgui.ImVec2(25, 20))
-							imgui.Hint(u8("Текст который будет выводится при слёте дома в чат. Используйте {COUNTRY} для вывода страны, {LAST_COUNT} - показывает сколько было домов до, {NOW_COUNT} - показывает сколько сейчас домов. Можно использовать цвета в формате {ЦВЕТ_HTML}. Пример белого цвета: {FFFFFF}"))
+							imgui.Hint(u8("����� ������� ����� ��������� ��� ����� ���� � ���. ����������� {COUNTRY} ��� ������ ������, {LAST_COUNT} - ���������� ������� ���� ����� ��, {NOW_COUNT} - ���������� ������� ������ �����. ����� ������������ ����� � ������� {����_HTML}. ������ ������ �����: {FFFFFF}"))
 						imgui.EndChild()
 					end
 
 					imgui.BeginChild("#vvv", imgui.ImVec2(335, 35), true)
-					if imgui.Checkbox(u8(" Авто-поиск в PayDay"), tableCheckbox["vvvp"]) then
+					if imgui.Checkbox(u8(" ����-����� � PayDay"), tableCheckbox["vvvp"]) then
 						database["settings"]["activPayday"] = tableCheckbox["vvvp"].v
 						saveDataBase()
 					end
 						imgui.EndChild()
-						 imgui.Button(u8("*Версия с уведомлениями в Telegram"), imgui.ImVec2(-1, 0))
-							imgui.Hint(u8"Данная версия скрипта позволяет уведомлять о слете дома в ТГ, сразу между несколькими пользователями, которые уже добавлены и подключены к боту.")
+						 imgui.Button(u8("*������ � ������������� � Telegram"), imgui.ImVec2(-1, 0))
+							imgui.Hint(u8"������ ������ ������� ��������� ���������� � ����� ���� � ��, ����� ����� ����������� ��������������, ������� ��� ��������� � ���������� � ����.")
 				imgui.EndChild()
 			end
 		imgui.End()
@@ -518,7 +518,7 @@ function main()
     if not isSampfuncsLoaded() or not isSampLoaded() then return end
 	while not isSampAvailable() do wait(100) end
 	update()
-	sampAddChatMessage("[GC]: {8be547}Чекер домов. /gosmenu - основное меню, /gos - просмотр кол-ва домов, /gos [паркинги] [цена]", -1)
+	sampAddChatMessage("[GC]: {8be547}����� �����. /gosmenu - �������� ����, /gos - �������� ���-�� �����, /gos [��������] [����]", -1)
 
 	lua_thread.create(functionTimer)
 
@@ -527,7 +527,7 @@ function main()
 	if not doesFileExist(getWorkingDirectory().."/config/gosChecker/sound.mp3") then
 		database["settings"]["activSound"] = false
 		saveDataBase()
-		sampAddChatMessage("[GS]: Не обнаружено файла sound.mp3. Добавьте файл по пути: /config/gosChecker/sound.mp3", database["settings"]["colorMessage"])
+		sampAddChatMessage("[GS]: �� ���������� ����� sound.mp3. �������� ���� �� ����: /config/gosChecker/sound.mp3", database["settings"]["colorMessage"])
 	else
 		loadSound = loadAudioStream(getWorkingDirectory().."/config/gosChecker/sound.mp3")
 	end
@@ -542,12 +542,12 @@ function main()
 					activationScript, checkAllHouse[1], gosCheckerMessage = true, true, true
 					sampSendChat("/call realty")
 				else
-					sampAddChatMessage("[GC]: {8be547}Закройте активные диалоги.", -1)
+					sampAddChatMessage("[GC]: {8be547}�������� �������� �������.", -1)
 				end
 			elseif text ~= "" and getCharActiveInterior(PLAYER_PED) ~= 0 then
-				return sampAddChatMessage("[GC]: {8be547}Вы не можете использовать эту функцию, находясь в интерьере.", -1)
+				return sampAddChatMessage("[GC]: {8be547}�� �� ������ ������������ ��� �������, �������� � ���������.", -1)
 			elseif not parks or not price or parks >= "3" and price ~= "%-" then
-				return sampAddChatMessage("[GC]: {8be547}Вводите правильно: /gos (кол-во парковок до 3х) (wена от-до)", -1)
+				return sampAddChatMessage("[GC]: {8be547}������� ���������: /gos (���-�� �������� �� 3�) (w��� ��-��)", -1)
 			end
 			if parksMin ~= 0 and priceRange ~= 0 and text ~= "" and not getCharActiveInterior(PLAYER_PED) ~= 0 and price:find("%-") then
 				if priceRange:find("x") then
@@ -609,11 +609,11 @@ function saveDataBase()
 	configFile:close()
 end
 
--- // Маркер в IMGUI
+-- // ������ � IMGUI
 function imgui.Hint(text, delay)
     if imgui.IsItemHovered() then
         if go_hint == nil then go_hint = os.clock() + (delay and delay or 0.0) end
-        local alpha = (os.clock() - go_hint) * 5 -- скорость появления
+        local alpha = (os.clock() - go_hint) * 5 -- �������� ���������
         if os.clock() >= go_hint then
             imgui.PushStyleVar(imgui.StyleVar.Alpha, (alpha <= 1.0 and alpha or 1.0))
                 imgui.PushStyleColor(imgui.Col.PopupBg, imgui.GetStyle().Colors[imgui.Col.ButtonHovered])
