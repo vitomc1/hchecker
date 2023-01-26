@@ -50,7 +50,7 @@ function update()
           lua_thread.create(goupdate) -- апдейт
         else -- если меньше, то
           update = false -- не даём обновиться
-          sampAddChatMessage('[GC]: {8be547}У вас и так последняя версия! Обновление отменено', -)
+          sampAddChatMessage('[GC]: {8be547}У вас и так последняя версия! Обновление отменено', -1)
         end
       end
     end
