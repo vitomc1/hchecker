@@ -1,17 +1,17 @@
 script_version("1.0")
 script_version_number(16)
 require "lib.moonloader"
-local sampev 		= require "lib.samp.events" -- // Åâåíòû
-local imgui 		= require "imgui" -- // Ïîäêëþ÷åíèå ImGui.
-local as_action 	= require("moonloader").audiostream_state -- // Ñîñòîÿíèå ñòðèì ìóçûêè
-local encoding 		= require "encoding" -- // Êîäèðîâêà
+local sampev 		= require "lib.samp.events" -- // Ð•Ð²ÐµÐ½Ñ‚Ñ‹
+local imgui 		= require "imgui" -- // ÐŸÐ¾Ð´ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ðµ ImGui.
+local as_action 	= require("moonloader").audiostream_state -- // Ð¡Ð¾ÑÑ‚Ð¾ÑÐ½Ð¸Ðµ ÑÑ‚Ñ€Ð¸Ð¼ Ð¼ÑƒÐ·Ñ‹ÐºÐ¸
+local encoding 		= require "encoding" -- // ÐšÐ¾Ð´Ð¸Ñ€Ð¾Ð²ÐºÐ°
 encoding.default 	= "CP1251"
 u8 = encoding.UTF8
 
 local effil = require 'effil'
 
-local rx, ry 				= getScreenResolution() -- // Ðàçìåð ýêðàíà
-local mainMenu				= imgui.ImBool(false) -- // Îñíîâíîå ìåíþ
+local rx, ry 				= getScreenResolution() -- // Ð Ð°Ð·Ð¼ÐµÑ€ ÑÐºÑ€Ð°Ð½Ð°
+local mainMenu				= imgui.ImBool(false) -- // ÐžÑÐ½Ð¾Ð²Ð½Ð¾Ðµ Ð¼ÐµÐ½ÑŽ
 
 local currentNumOfHouses = { US = 0, AF = 0, RC = 0 }
 local lastCurrentNumOfHouses = { US = 0, AF = 0, RC = 0 }
@@ -37,52 +37,52 @@ local botTG = "5614538474:AAGOKPENb_fO-WFpkkrS_-Zr6vHPJt7DuDw"
 local dlstatus = require('moonloader').download_status
 
 function update()
-  local fpath = os.getenv('TEMP') .. '\\testing_version.json' -- êóäà áóäåò êà÷àòüñÿ íàø ôàéëèê äëÿ ñðàâíåíèÿ âåðñèè
-  downloadUrlToFile('https://raw.githubusercontent.com/vitomc1/hchecker/main/version.json', fpath, function(id, status, p1, p2) -- ññûëêó íà âàø ãèòõàá ãäå åñòü ñòðî÷êè êîòîðûå ÿ ââ¸ë â òåìå èëè ëþáîé äðóãîé ñàéò
+  local fpath = os.getenv('TEMP') .. '\\testing_version.json' -- ÐºÑƒÐ´Ð° Ð±ÑƒÐ´ÐµÑ‚ ÐºÐ°Ñ‡Ð°Ñ‚ÑŒÑÑ Ð½Ð°Ñˆ Ñ„Ð°Ð¹Ð»Ð¸Ðº Ð´Ð»Ñ ÑÑ€Ð°Ð²Ð½ÐµÐ½Ð¸Ñ Ð²ÐµÑ€ÑÐ¸Ð¸
+  downloadUrlToFile('https://raw.githubusercontent.com/vitomc1/hchecker/main/version.json', fpath, function(id, status, p1, p2) -- ÑÑÑ‹Ð»ÐºÑƒ Ð½Ð° Ð²Ð°Ñˆ Ð³Ð¸Ñ‚Ñ…Ð°Ð± Ð³Ð´Ðµ ÐµÑÑ‚ÑŒ ÑÑ‚Ñ€Ð¾Ñ‡ÐºÐ¸ ÐºÐ¾Ñ‚Ð¾Ñ€Ñ‹Ðµ Ñ Ð²Ð²Ñ‘Ð» Ð² Ñ‚ÐµÐ¼Ðµ Ð¸Ð»Ð¸ Ð»ÑŽÐ±Ð¾Ð¹ Ð´Ñ€ÑƒÐ³Ð¾Ð¹ ÑÐ°Ð¹Ñ‚
     if status == dlstatus.STATUS_ENDDOWNLOADDATA then
-    local f = io.open(fpath, 'r') -- îòêðûâàåò ôàéë
+    local f = io.open(fpath, 'r') -- Ð¾Ñ‚ÐºÑ€Ñ‹Ð²Ð°ÐµÑ‚ Ñ„Ð°Ð¹Ð»
     if f then
-      local info = decodeJson(f:read('*a')) -- ÷èòàåò
+      local info = decodeJson(f:read('*a')) -- Ñ‡Ð¸Ñ‚Ð°ÐµÑ‚
       updatelink = info.updateurl
       if info and info.latest then
-        version = tonumber(info.latest) -- ïåðåâîäèò âåðñèþ â ÷èñëî
-        if version > tonumber(thisScript().version) then -- åñëè âåðñèÿ áîëüøå ÷åì âåðñèÿ óñòàíîâëåííàÿ òî...
-          lua_thread.create(goupdate) -- àïäåéò
-        else -- åñëè ìåíüøå, òî
-          update = false -- íå äà¸ì îáíîâèòüñÿ
-          --sampAddChatMessage('[GC]: {8be547}Ó âàñ è òàê ïîñëåäíÿÿ âåðñèÿ! Îáíîâëåíèå îòìåíåíî', -1)
+        version = tonumber(info.latest) -- Ð¿ÐµÑ€ÐµÐ²Ð¾Ð´Ð¸Ñ‚ Ð²ÐµÑ€ÑÐ¸ÑŽ Ð² Ñ‡Ð¸ÑÐ»Ð¾
+        if version > tonumber(thisScript().version) then -- ÐµÑÐ»Ð¸ Ð²ÐµÑ€ÑÐ¸Ñ Ð±Ð¾Ð»ÑŒÑˆÐµ Ñ‡ÐµÐ¼ Ð²ÐµÑ€ÑÐ¸Ñ ÑƒÑÑ‚Ð°Ð½Ð¾Ð²Ð»ÐµÐ½Ð½Ð°Ñ Ñ‚Ð¾...
+          lua_thread.create(goupdate) -- Ð°Ð¿Ð´ÐµÐ¹Ñ‚
+        else -- ÐµÑÐ»Ð¸ Ð¼ÐµÐ½ÑŒÑˆÐµ, Ñ‚Ð¾
+          update = false -- Ð½Ðµ Ð´Ð°Ñ‘Ð¼ Ð¾Ð±Ð½Ð¾Ð²Ð¸Ñ‚ÑŒÑÑ
+          --sampAddChatMessage('[GC]: {8be547}Ð£ Ð²Ð°Ñ Ð¸ Ñ‚Ð°Ðº Ð¿Ð¾ÑÐ»ÐµÐ´Ð½ÑÑ Ð²ÐµÑ€ÑÐ¸Ñ! ÐžÐ±Ð½Ð¾Ð²Ð»ÐµÐ½Ð¸Ðµ Ð¾Ñ‚Ð¼ÐµÐ½ÐµÐ½Ð¾', -1)
         end
       end
     end
   end
 end)
 end
---ñêà÷èâàíèå àêòóàëüíîé âåðñèè
---"[GC]: {8be547}×åêåð äîìîâ. /gosmenu - îñíîâíîå ìåíþ, /gos - ïðîñìîòð êîë-âà äîìîâ, /gos [ïàðêèíãè] [öåíà]", -1
+--ÑÐºÐ°Ñ‡Ð¸Ð²Ð°Ð½Ð¸Ðµ Ð°ÐºÑ‚ÑƒÐ°Ð»ÑŒÐ½Ð¾Ð¹ Ð²ÐµÑ€ÑÐ¸Ð¸
+--"[GC]: {8be547}Ð§ÐµÐºÐµÑ€ Ð´Ð¾Ð¼Ð¾Ð². /gosmenu - Ð¾ÑÐ½Ð¾Ð²Ð½Ð¾Ðµ Ð¼ÐµÐ½ÑŽ, /gos - Ð¿Ñ€Ð¾ÑÐ¼Ð¾Ñ‚Ñ€ ÐºÐ¾Ð»-Ð²Ð° Ð´Ð¾Ð¼Ð¾Ð², /gos [Ð¿Ð°Ñ€ÐºÐ¸Ð½Ð³Ð¸] [Ñ†ÐµÐ½Ð°]", -1
 function goupdate()
-sampAddChatMessage('[GC]: {8be547}Îáíàðóæåíî îáíîâëåíèå. AutoReload ìîæåò êîíôëèêòîâàòü. Îáíîâëÿþñü...', -1)
-sampAddChatMessage('[GC]: {8be547}Òåêóùàÿ âåðñèÿ: '..thisScript().version..". Íîâàÿ âåðñèÿ: "..version, -1)
+sampAddChatMessage('[GC]: {8be547}ÐžÐ±Ð½Ð°Ñ€ÑƒÐ¶ÐµÐ½Ð¾ Ð¾Ð±Ð½Ð¾Ð²Ð»ÐµÐ½Ð¸Ðµ. AutoReload Ð¼Ð¾Ð¶ÐµÑ‚ ÐºÐ¾Ð½Ñ„Ð»Ð¸ÐºÑ‚Ð¾Ð²Ð°Ñ‚ÑŒ. ÐžÐ±Ð½Ð¾Ð²Ð»ÑÑŽÑÑŒ...', -1)
+sampAddChatMessage('[GC]: {8be547}Ð¢ÐµÐºÑƒÑ‰Ð°Ñ Ð²ÐµÑ€ÑÐ¸Ñ: '..thisScript().version..". ÐÐ¾Ð²Ð°Ñ Ð²ÐµÑ€ÑÐ¸Ñ: "..version, -1)
 wait(300)
-downloadUrlToFile(updatelink, thisScript().path, function(id3, status1, p13, p23) -- êà÷àåò âàø ôàéëèê ñ latest version
+downloadUrlToFile(updatelink, thisScript().path, function(id3, status1, p13, p23) -- ÐºÐ°Ñ‡Ð°ÐµÑ‚ Ð²Ð°Ñˆ Ñ„Ð°Ð¹Ð»Ð¸Ðº Ñ latest version
   if status1 == dlstatus.STATUS_ENDDOWNLOADDATA then
-  sampAddChatMessage('[GC]: {8be547}Îáíîâëåíèå çàâåðøåíî!', -1)
+  sampAddChatMessage('[GC]: {8be547}ÐžÐ±Ð½Ð¾Ð²Ð»ÐµÐ½Ð¸Ðµ Ð·Ð°Ð²ÐµÑ€ÑˆÐµÐ½Ð¾!', -1)
   thisScript():reload()
 end
 end)
 end
 
--- ÂÑ¨!
+-- Ð’Ð¡Ð!
 
 
 
--- // Åñëè íåò êîíôèãà - ñîçäàåì
+-- // Ð•ÑÐ»Ð¸ Ð½ÐµÑ‚ ÐºÐ¾Ð½Ñ„Ð¸Ð³Ð° - ÑÐ¾Ð·Ð´Ð°ÐµÐ¼
 if not doesDirectoryExist(getWorkingDirectory().."/config") then
 	createDirectory(getWorkingDirectory().."/config")
 end
 if not doesDirectoryExist(getWorkingDirectory().."/config/gosChecker") then
 	createDirectory(getWorkingDirectory().."/config/gosChecker")
 end
--- // Íåò ôàéëà ñ íàñòðîéêàìè - ñîçäàåì
+-- // ÐÐµÑ‚ Ñ„Ð°Ð¹Ð»Ð° Ñ Ð½Ð°ÑÑ‚Ñ€Ð¾Ð¹ÐºÐ°Ð¼Ð¸ - ÑÐ¾Ð·Ð´Ð°ÐµÐ¼
 if not doesFileExist(getWorkingDirectory().."/config/gosChecker/settings.json") then
 	local fee = io.open(getWorkingDirectory().."/config/gosChecker/settings.json", "w")
 	fee:write(encodeJson({
@@ -92,7 +92,7 @@ if not doesFileExist(getWorkingDirectory().."/config/gosChecker/settings.json") 
 			volumeSound = 40,
 			activMessage = true,
 			colorMessage = 0xFF32CD32,
-			textMessage = "[GC]: {AA0000}ÂÍÈÌÀÍÈÅ!{8be547} Â {COUNTRY} ñëåòåë íîâûé äîì. Ïðè ïîñëåäíåé ïðîâåðêå áûëî {FFFFFF}{LAST_COUNT} {8be547}äîìîâ, ñåé÷àñ èõ {FFFFFF}{NOW_COUNT}",
+			textMessage = "[GC]: {AA0000}Ð’ÐÐ˜ÐœÐÐÐ˜Ð•!{8be547} Ð’ {COUNTRY} ÑÐ»ÐµÑ‚ÐµÐ» Ð½Ð¾Ð²Ñ‹Ð¹ Ð´Ð¾Ð¼. ÐŸÑ€Ð¸ Ð¿Ð¾ÑÐ»ÐµÐ´Ð½ÐµÐ¹ Ð¿Ñ€Ð¾Ð²ÐµÑ€ÐºÐµ Ð±Ñ‹Ð»Ð¾ {FFFFFF}{LAST_COUNT} {8be547}Ð´Ð¾Ð¼Ð¾Ð², ÑÐµÐ¹Ñ‡Ð°Ñ Ð¸Ñ… {FFFFFF}{NOW_COUNT}",
 			activPayday = false,
 			activMonitor = true,
 			posMonitorX = 200,
@@ -105,7 +105,7 @@ if not doesFileExist(getWorkingDirectory().."/config/gosChecker/settings.json") 
 	}))
 	io.close(fee)
 end
--- // Åñëè åñòü - ïîäêëþ÷àåì
+-- // Ð•ÑÐ»Ð¸ ÐµÑÑ‚ÑŒ - Ð¿Ð¾Ð´ÐºÐ»ÑŽÑ‡Ð°ÐµÐ¼
 if doesFileExist(getWorkingDirectory().."/config/gosChecker/settings.json") then
 	local fee = io.open(getWorkingDirectory().."/config/gosChecker/settings.json", "r")
 	if fee then
@@ -114,7 +114,7 @@ if doesFileExist(getWorkingDirectory().."/config/gosChecker/settings.json") then
 	end
 end
 
-local sliderVolume = imgui.ImFloat(tonumber(database["settings"]["volumeSound"])) -- // Ñëàéäåð çâóêà
+local sliderVolume = imgui.ImFloat(tonumber(database["settings"]["volumeSound"])) -- // Ð¡Ð»Ð°Ð¹Ð´ÐµÑ€ Ð·Ð²ÑƒÐºÐ°
 
 local tableCheckbox = {
 	activScript = imgui.ImBool(database["settings"]["activScript"]),
@@ -150,13 +150,13 @@ function checkForNewHouses()
 				local text = text:gsub("{LAST_COUNT}", lastCurrentNumOfHouses[city])
 				local text = text:gsub("{NOW_COUNT}", currentNumOfHouses[city])
 				sampAddChatMessage(text, database["settings"]["colorMessage"])
-				local sendVk = "[GC]: Â "..city.." ñëåòåë íîâûé äîì. Ïðè ïîñëåäíåé ïðîâåðêå áûëî "..lastCurrentNumOfHouses[city].." äîìîâ, ñåé÷àñ èõ "..currentNumOfHouses[city]..""
+				local sendVk = "[GC]: Ð’ "..city.." ÑÐ»ÐµÑ‚ÐµÐ» Ð½Ð¾Ð²Ñ‹Ð¹ Ð´Ð¾Ð¼. ÐŸÑ€Ð¸ Ð¿Ð¾ÑÐ»ÐµÐ´Ð½ÐµÐ¹ Ð¿Ñ€Ð¾Ð²ÐµÑ€ÐºÐµ Ð±Ñ‹Ð»Ð¾ "..lastCurrentNumOfHouses[city].." Ð´Ð¾Ð¼Ð¾Ð², ÑÐµÐ¹Ñ‡Ð°Ñ Ð¸Ñ… "..currentNumOfHouses[city]..""
 
 				local _, id = sampGetPlayerIdByCharHandle(playerPed)
 				local ip = sampGetCurrentServerAddress()
 				if ip == "185.169.134.83" then
 					prefixTG = "RPG"
-					local sendTG = ""..prefixTG..":  Â  '"..city.."'  ñëåòåë  äîì.  Áûëî:  "..lastCurrentNumOfHouses[city]..",  à  ñåé÷àñ  -  "..currentNumOfHouses[city].."  |  "..os.date("Âðåìÿ:  %H:%M:%S  Äàòà: %d.%m.20%y").."     *Èíôîðìàöèÿ  îò:  "..sampGetPlayerNickname(id)
+					local sendTG = ""..prefixTG..":  Ð’  '"..city.."'  ÑÐ»ÐµÑ‚ÐµÐ»  Ð´Ð¾Ð¼.  Ð‘Ñ‹Ð»Ð¾:  "..lastCurrentNumOfHouses[city]..",  Ð°  ÑÐµÐ¹Ñ‡Ð°Ñ  -  "..currentNumOfHouses[city].."  |  "..os.date("Ð’Ñ€ÐµÐ¼Ñ:  %H:%M:%S  Ð”Ð°Ñ‚Ð°: %d.%m.20%y").."     *Ð˜Ð½Ñ„Ð¾Ñ€Ð¼Ð°Ñ†Ð¸Ñ  Ð¾Ñ‚:  "..sampGetPlayerNickname(id)
 					async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. maximTG .. "&text=" .. u8(sendTG), "", function (result)
 						sampAddChatMessage("maxTG+", -1)
 					end)
@@ -171,7 +171,7 @@ function checkForNewHouses()
 					end)
 				elseif ip == "185.169.134.84" then
 					prefixTG = "TRP1"
-					local sendTG = ""..prefixTG..":  Â  '"..city.."'  ñëåòåë  äîì.  Áûëî:  "..lastCurrentNumOfHouses[city]..",  à  ñåé÷àñ  -  "..currentNumOfHouses[city].."  |  "..os.date("Âðåìÿ:  %H:%M:%S  Äàòà: %d.%m.20%y").."     *Èíôîðìàöèÿ  îò:  "..sampGetPlayerNickname(id)
+					local sendTG = ""..prefixTG..":  Ð’  '"..city.."'  ÑÐ»ÐµÑ‚ÐµÐ»  Ð´Ð¾Ð¼.  Ð‘Ñ‹Ð»Ð¾:  "..lastCurrentNumOfHouses[city]..",  Ð°  ÑÐµÐ¹Ñ‡Ð°Ñ  -  "..currentNumOfHouses[city].."  |  "..os.date("Ð’Ñ€ÐµÐ¼Ñ:  %H:%M:%S  Ð”Ð°Ñ‚Ð°: %d.%m.20%y").."     *Ð˜Ð½Ñ„Ð¾Ñ€Ð¼Ð°Ñ†Ð¸Ñ  Ð¾Ñ‚:  "..sampGetPlayerNickname(id)
 					async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. maximTG .. "&text=" .. u8(sendTG), "", function (result)
 						sampAddChatMessage("maxTG+", -1)
 					end)
@@ -186,7 +186,7 @@ function checkForNewHouses()
 					end)
 				elseif ip == "185.169.134.85" then
 					prefixTG = "TRP2"
-					local sendTG = "??"..prefixTG..":  Â  '"..city.."'  ñëåòåë  äîì.  Áûëî:  "..lastCurrentNumOfHouses[city]..",  à  ñåé÷àñ  -  "..currentNumOfHouses[city].."  |  "..os.date("Âðåìÿ:  %H:%M:%S  Äàòà: %d.%m.20%y").."     *Èíôîðìàöèÿ  îò:  "..sampGetPlayerNickname(id)
+					local sendTG = "??"..prefixTG..":  Ð’  '"..city.."'  ÑÐ»ÐµÑ‚ÐµÐ»  Ð´Ð¾Ð¼.  Ð‘Ñ‹Ð»Ð¾:  "..lastCurrentNumOfHouses[city]..",  Ð°  ÑÐµÐ¹Ñ‡Ð°Ñ  -  "..currentNumOfHouses[city].."  |  "..os.date("Ð’Ñ€ÐµÐ¼Ñ:  %H:%M:%S  Ð”Ð°Ñ‚Ð°: %d.%m.20%y").."     *Ð˜Ð½Ñ„Ð¾Ñ€Ð¼Ð°Ñ†Ð¸Ñ  Ð¾Ñ‚:  "..sampGetPlayerNickname(id)
 					async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. maximTG .. "&text=" .. u8(sendTG), "", function (result)
 						sampAddChatMessage("maxTG+", -1)
 					end)
@@ -224,20 +224,20 @@ function checkForNewHouses()
 end
 
 function sampev.onServerMessage(color, text)
-	if text:find("Ïåðåä èñïîëüçîâàíèåì äàííîé âîçìîæíîñòè ñëåäóåò çàêðûòü âñå àêòèâíûå äèàëîãîâûå îêíà") then
+	if text:find("ÐŸÐµÑ€ÐµÐ´ Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ð½Ð¸ÐµÐ¼ Ð´Ð°Ð½Ð½Ð¾Ð¹ Ð²Ð¾Ð·Ð¼Ð¾Ð¶Ð½Ð¾ÑÑ‚Ð¸ ÑÐ»ÐµÐ´ÑƒÐµÑ‚ Ð·Ð°ÐºÑ€Ñ‹Ñ‚ÑŒ Ð²ÑÐµ Ð°ÐºÑ‚Ð¸Ð²Ð½Ñ‹Ðµ Ð´Ð¸Ð°Ð»Ð¾Ð³Ð¾Ð²Ñ‹Ðµ Ð¾ÐºÐ½Ð°") then
 		return false
 	end
-	if text:find("Âû íå ìîæåòå èñïîëüçîâàòü ñòàòè÷íûå òåëåôîíû äëÿ çâîíêîâ íà ýòè íîìåðà.") then
+	if text:find("Ð’Ñ‹ Ð½Ðµ Ð¼Ð¾Ð¶ÐµÑ‚Ðµ Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ñ‚ÑŒ ÑÑ‚Ð°Ñ‚Ð¸Ñ‡Ð½Ñ‹Ðµ Ñ‚ÐµÐ»ÐµÑ„Ð¾Ð½Ñ‹ Ð´Ð»Ñ Ð·Ð²Ð¾Ð½ÐºÐ¾Ð² Ð½Ð° ÑÑ‚Ð¸ Ð½Ð¾Ð¼ÐµÑ€Ð°.") then
 		return false
 	end
-	if text:find("Âû óæå ðàçãîâàðèâàåòå ïî ìîáèëüíîìó òåëåôîíó.") then
+	if text:find("Ð’Ñ‹ ÑƒÐ¶Ðµ Ñ€Ð°Ð·Ð³Ð¾Ð²Ð°Ñ€Ð¸Ð²Ð°ÐµÑ‚Ðµ Ð¿Ð¾ Ð¼Ð¾Ð±Ð¸Ð»ÑŒÐ½Ð¾Ð¼Ñƒ Ñ‚ÐµÐ»ÐµÑ„Ð¾Ð½Ñƒ.") then
 		return false
 	end
 	lua_thread.create(function()
 		if database["settings"]["activPayday"] then
-			if text:find("Àäìèíèñòðàöèÿ ïðîåêòà áëàãîäàðèò âàñ çà òî") then
+			if text:find("ÐÐ´Ð¼Ð¸Ð½Ð¸ÑÑ‚Ñ€Ð°Ñ†Ð¸Ñ Ð¿Ñ€Ð¾ÐµÐºÑ‚Ð° Ð±Ð»Ð°Ð³Ð¾Ð´Ð°Ñ€Ð¸Ñ‚ Ð²Ð°Ñ Ð·Ð° Ñ‚Ð¾") then
 				wait(0)
-				sampAddChatMessage("[GC]: {8be547}Ïîèñê ñëåòåâøèõ äîìîâ...", -1)
+				sampAddChatMessage("[GC]: {8be547}ÐŸÐ¾Ð¸ÑÐº ÑÐ»ÐµÑ‚ÐµÐ²ÑˆÐ¸Ñ… Ð´Ð¾Ð¼Ð¾Ð²...", -1)
 				sampProcessChatInput("/gos 0 1-9000000")
 			end
 		end
@@ -246,8 +246,8 @@ end
 
 function sampev.onShowDialog(id, style, title, btn1, btn2, text)
 	if activationScript then
-		-- // Ïðîñìîòð âñåõ äîìîâ
-		if checkAllHouse[1] and id == 2110 and title:find("Ïîèñê âûñòàâëåííûõ íà ïðîäàæó äîìîâ") then
+		-- // ÐŸÑ€Ð¾ÑÐ¼Ð¾Ñ‚Ñ€ Ð²ÑÐµÑ… Ð´Ð¾Ð¼Ð¾Ð²
+		if checkAllHouse[1] and id == 2110 and title:find("ÐŸÐ¾Ð¸ÑÐº Ð²Ñ‹ÑÑ‚Ð°Ð²Ð»ÐµÐ½Ð½Ñ‹Ñ… Ð½Ð° Ð¿Ñ€Ð¾Ð´Ð°Ð¶Ñƒ Ð´Ð¾Ð¼Ð¾Ð²") then
 			sampSendDialogResponse(2110, 1, 0, "")
 			checkAllHouse[1], checkAllHouse[2] = false, true
 			return false
@@ -265,7 +265,7 @@ function sampev.onShowDialog(id, style, title, btn1, btn2, text)
 
 			end
 			if gosCheckerMessage then
-				sampAddChatMessage(	"[GC]: {8be547}Êîëè÷åñòâî äîìîâ â ãîñå: US - {ffffff}" .. currentNumOfHouses.US .. "{8be547} | AF - {ffffff}" .. currentNumOfHouses.AF .. "{8be547} | RC - {ffffff}" .. currentNumOfHouses.RC, -1)
+				sampAddChatMessage(	"[GC]: {8be547}ÐšÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾ Ð´Ð¾Ð¼Ð¾Ð² Ð² Ð³Ð¾ÑÐµ: US - {ffffff}" .. currentNumOfHouses.US .. "{8be547} | AF - {ffffff}" .. currentNumOfHouses.AF .. "{8be547} | RC - {ffffff}" .. currentNumOfHouses.RC, -1)
 				gosCheckerMessage = false
 			end
 			checkForNewHouses()
@@ -274,19 +274,19 @@ function sampev.onShowDialog(id, style, title, btn1, btn2, text)
 			return false
 		end
 
-		-- // Ïîèñê ïî äàííûì
-		if checkInGosHouse[1] and id == 2110 and title:find("Ïîèñê âûñòàâëåííûõ íà ïðîäàæó äîìîâ") then
+		-- // ÐŸÐ¾Ð¸ÑÐº Ð¿Ð¾ Ð´Ð°Ð½Ð½Ñ‹Ð¼
+		if checkInGosHouse[1] and id == 2110 and title:find("ÐŸÐ¾Ð¸ÑÐº Ð²Ñ‹ÑÑ‚Ð°Ð²Ð»ÐµÐ½Ð½Ñ‹Ñ… Ð½Ð° Ð¿Ñ€Ð¾Ð´Ð°Ð¶Ñƒ Ð´Ð¾Ð¼Ð¾Ð²") then
 			sampSendDialogResponse(2110, 1, 2, "")
 			checkInGosHouse[1], checkInGosHouse[2] = false, true
 			checkInGosViborGos = true
 			return false
 		end
-		if checkInGosHouse[2] and id == 2112 and title:find("Ìàñòåð ïîèñêà äîìîâ") then
+		if checkInGosHouse[2] and id == 2112 and title:find("ÐœÐ°ÑÑ‚ÐµÑ€ Ð¿Ð¾Ð¸ÑÐºÐ° Ð´Ð¾Ð¼Ð¾Ð²") then
 			sampSendDialogResponse(2112, 1, 1, "")
 			checkInGosHouse[2], checkInGosHouse[3] = false, true
 			return false
 		end
-		if checkInGosHouse[3] and id == 2112 and title:find("Ìàñòåð ïîèñêà äîìîâ") then
+		if checkInGosHouse[3] and id == 2112 and title:find("ÐœÐ°ÑÑ‚ÐµÑ€ Ð¿Ð¾Ð¸ÑÐºÐ° Ð´Ð¾Ð¼Ð¾Ð²") then
 			sampSendDialogResponse(2112, 1, 2, "")
 			checkInGosHouse[3], checkInGosHouse[4] = false, true
 			return false
@@ -321,21 +321,21 @@ function sampev.onShowDialog(id, style, title, btn1, btn2, text)
 				return false
 			end
 		end
-		if checkInGosHouse[8] and id == 2111 and text:find("Ïî âàøåìó çàïðîñó íå íàéäåíî") then
-			sampAddChatMessage("[GC]: {8be547}Ïî âàøåìó çàïðîñó íå íàéäåíî íè îäíîãî ïðåäëîæåíèÿ î ïðîäàæå.", -1)
+		if checkInGosHouse[8] and id == 2111 and text:find("ÐŸÐ¾ Ð²Ð°ÑˆÐµÐ¼Ñƒ Ð·Ð°Ð¿Ñ€Ð¾ÑÑƒ Ð½Ðµ Ð½Ð°Ð¹Ð´ÐµÐ½Ð¾") then
+			sampAddChatMessage("[GC]: {8be547}ÐŸÐ¾ Ð²Ð°ÑˆÐµÐ¼Ñƒ Ð·Ð°Ð¿Ñ€Ð¾ÑÑƒ Ð½Ðµ Ð½Ð°Ð¹Ð´ÐµÐ½Ð¾ Ð½Ð¸ Ð¾Ð´Ð½Ð¾Ð³Ð¾ Ð¿Ñ€ÐµÐ´Ð»Ð¾Ð¶ÐµÐ½Ð¸Ñ Ð¾ Ð¿Ñ€Ð¾Ð´Ð°Ð¶Ðµ.", -1)
 			sampSendDialogResponse(2111, 1, 0, "")
 			checkInGosHouse[8], checkInGosHouse[9], closeDialog = false, false, true
 			return false
 		end
-		if checkInGosHouse[9] and id == 2111 and text:find("Ïî âàøåìó çàïðîñó íàéäåíî") then
+		if checkInGosHouse[9] and id == 2111 and text:find("ÐŸÐ¾ Ð²Ð°ÑˆÐµÐ¼Ñƒ Ð·Ð°Ð¿Ñ€Ð¾ÑÑƒ Ð½Ð°Ð¹Ð´ÐµÐ½Ð¾") then
 			local kolvoGosHouse = text:match("{fbec5d}(%d+){ffffff}")
 			sampSendDialogResponse(2111, 1, 0, "")
-			sampAddChatMessage("[GC]: {8be547}Ïî âàøåìó çàïðîñó íàéäåíî {FFFFFF}"..kolvoGosHouse.. "{8be547} ïðåäëîæåíèé. Áëèæàéøåå ê âàì îòìå÷åíî íà ðàäàðå.", -1)
+			sampAddChatMessage("[GC]: {8be547}ÐŸÐ¾ Ð²Ð°ÑˆÐµÐ¼Ñƒ Ð·Ð°Ð¿Ñ€Ð¾ÑÑƒ Ð½Ð°Ð¹Ð´ÐµÐ½Ð¾ {FFFFFF}"..kolvoGosHouse.. "{8be547} Ð¿Ñ€ÐµÐ´Ð»Ð¾Ð¶ÐµÐ½Ð¸Ð¹. Ð‘Ð»Ð¸Ð¶Ð°Ð¹ÑˆÐµÐµ Ðº Ð²Ð°Ð¼ Ð¾Ñ‚Ð¼ÐµÑ‡ÐµÐ½Ð¾ Ð½Ð° Ñ€Ð°Ð´Ð°Ñ€Ðµ.", -1)
 			checkInGosHouse[8], checkInGosHouse[9], closeDialog = false, false, true
 			return false
 		end
 
-		-- // Çàêðûòèå äèàëîãà /call realty
+		-- // Ð—Ð°ÐºÑ€Ñ‹Ñ‚Ð¸Ðµ Ð´Ð¸Ð°Ð»Ð¾Ð³Ð° /call realty
 		if closeDialog and id == 2110 then
 			sampSendDialogResponse(2110, 0, 0, "")
 			closeDialog = false
@@ -350,7 +350,7 @@ end
 function url_encode(str)
 	return string.gsub(string.gsub(str, "\\", "\\"), "([^%w])", char_to_hex)
 end
-function requestRunner() -- ñîçäàíèå effil ïîòîêà ñ ôóíêöèåé https çàïðîñà
+function requestRunner() -- ÑÐ¾Ð·Ð´Ð°Ð½Ð¸Ðµ effil Ð¿Ð¾Ñ‚Ð¾ÐºÐ° Ñ Ñ„ÑƒÐ½ÐºÑ†Ð¸ÐµÐ¹ https Ð·Ð°Ð¿Ñ€Ð¾ÑÐ°
 	return effil.thread(function(u, a)
 		local https = require 'ssl.https'
 		local ok, result = pcall(https.request, u, a)
@@ -362,7 +362,7 @@ function requestRunner() -- ñîçäàíèå effil ïîòîêà ñ ôóíêöèåé https çàïðîñà
 	end)
 end
 
-function threadHandle(runner, url, args, resolve, reject) -- îáðàáîòêà effil ïîòîêà áåç áëîêèðîâîê
+function threadHandle(runner, url, args, resolve, reject) -- Ð¾Ð±Ñ€Ð°Ð±Ð¾Ñ‚ÐºÐ° effil Ð¿Ð¾Ñ‚Ð¾ÐºÐ° Ð±ÐµÐ· Ð±Ð»Ð¾ÐºÐ¸Ñ€Ð¾Ð²Ð¾Ðº
 	local t = runner(url, args)
 	local r = t:get(0)
 	while not r do
@@ -389,7 +389,7 @@ function async_http_request(url, args, resolve, reject)
 	end)
 end
 
--- // IMGUI îêíà
+-- // IMGUI Ð¾ÐºÐ½Ð°
 function imgui.OnDrawFrame()
 	if mainMenu.v then
 		if database["settings"]["activScript"] then
@@ -401,7 +401,7 @@ function imgui.OnDrawFrame()
 		end
 		imgui.Begin(u8(" GOS Checker | Trinity GTA"), mainMenu, imgui.WindowFlags.NoCollapse + imgui.WindowFlags.NoResize)
 			imgui.BeginChild("#UP_PANEL", imgui.ImVec2(350, 35), true)
-				if imgui.Checkbox(u8(" Àêòèâàöèÿ. Âêëþ÷èòü ñêðèïò?"), tableCheckbox["activScript"]) then
+				if imgui.Checkbox(u8(" ÐÐºÑ‚Ð¸Ð²Ð°Ñ†Ð¸Ñ. Ð’ÐºÐ»ÑŽÑ‡Ð¸Ñ‚ÑŒ ÑÐºÑ€Ð¸Ð¿Ñ‚?"), tableCheckbox["activScript"]) then
 					database["settings"]["activScript"] = tableCheckbox["activScript"].v
 					saveDataBase()
 				end
@@ -410,18 +410,18 @@ function imgui.OnDrawFrame()
 				imgui.BeginChild("##CENTER_PANEL", imgui.ImVec2(350, -1), true)
 					imgui.BeginChild("##timeWait", imgui.ImVec2(335, 35), true)
 						imgui.PushItemWidth(90)
-							if imgui.InputInt(u8(" Çàäåðæêà ìåæäó ÷åêàìè (â ñåê.)"), tableImInt["timeWait"]) then
+							if imgui.InputInt(u8(" Ð—Ð°Ð´ÐµÑ€Ð¶ÐºÐ° Ð¼ÐµÐ¶Ð´Ñƒ Ñ‡ÐµÐºÐ°Ð¼Ð¸ (Ð² ÑÐµÐº.)"), tableImInt["timeWait"]) then
 								database["settings"]["timeWait"] = tableImInt["timeWait"].v * 1000
 								saveDataBase()
 							end
 						imgui.PopItemWidth()
 						imgui.SameLine()
 						imgui.Button("(?)", imgui.ImVec2(25, 20))
-						imgui.Hint(u8("Çàäåðæêà ïðè ïîëó÷åíèè èíôîðìàöèè î òåêóùèõ äîìàõ íà ñåðâåðå. Óêàçûâàòü â ñåêóíäàõ"))
+						imgui.Hint(u8("Ð—Ð°Ð´ÐµÑ€Ð¶ÐºÐ° Ð¿Ñ€Ð¸ Ð¿Ð¾Ð»ÑƒÑ‡ÐµÐ½Ð¸Ð¸ Ð¸Ð½Ñ„Ð¾Ñ€Ð¼Ð°Ñ†Ð¸Ð¸ Ð¾ Ñ‚ÐµÐºÑƒÑ‰Ð¸Ñ… Ð´Ð¾Ð¼Ð°Ñ… Ð½Ð° ÑÐµÑ€Ð²ÐµÑ€Ðµ. Ð£ÐºÐ°Ð·Ñ‹Ð²Ð°Ñ‚ÑŒ Ð² ÑÐµÐºÑƒÐ½Ð´Ð°Ñ…"))
 					imgui.EndChild()
 					imgui.Spacing()
 
-					if imgui.Checkbox(u8(" Âûâîäèòü ìîíèòîðèíã?"), tableCheckbox["activMonitor"]) then
+					if imgui.Checkbox(u8(" Ð’Ñ‹Ð²Ð¾Ð´Ð¸Ñ‚ÑŒ Ð¼Ð¾Ð½Ð¸Ñ‚Ð¾Ñ€Ð¸Ð½Ð³?"), tableCheckbox["activMonitor"]) then
 						database["settings"]["activMonitor"] = tableCheckbox["activMonitor"].v
 						saveDataBase()
 					end
@@ -435,32 +435,32 @@ function imgui.OnDrawFrame()
 							imgui.PopItemWidth()
 							imgui.SameLine()
 							imgui.Button("(?)", imgui.ImVec2(25, 20))
-							imgui.Hint(u8("Òåêñò êîòîðûé áóäåò âûâîäèòñÿ íà ýêðàí äëÿ ìîíèòîðèíãà. Èñïîëüçóéòå {AF}, {US}, {RC} - äëÿ âûâîäà êîë-âà äîìîâ â ñòðàíàõ. Ìîæíî èñïîëüçîâàòü öâåòà â ôîðìàòå {ÖÂÅÒ_HTML}. Ïðèìåð áåëîãî öâåòà: {FFFFFF}"))
+							imgui.Hint(u8("Ð¢ÐµÐºÑÑ‚ ÐºÐ¾Ñ‚Ð¾Ñ€Ñ‹Ð¹ Ð±ÑƒÐ´ÐµÑ‚ Ð²Ñ‹Ð²Ð¾Ð´Ð¸Ñ‚ÑÑ Ð½Ð° ÑÐºÑ€Ð°Ð½ Ð´Ð»Ñ Ð¼Ð¾Ð½Ð¸Ñ‚Ð¾Ñ€Ð¸Ð½Ð³Ð°. Ð˜ÑÐ¿Ð¾Ð»ÑŒÐ·ÑƒÐ¹Ñ‚Ðµ {AF}, {US}, {RC} - Ð´Ð»Ñ Ð²Ñ‹Ð²Ð¾Ð´Ð° ÐºÐ¾Ð»-Ð²Ð° Ð´Ð¾Ð¼Ð¾Ð² Ð² ÑÑ‚Ñ€Ð°Ð½Ð°Ñ…. ÐœÐ¾Ð¶Ð½Ð¾ Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ñ‚ÑŒ Ñ†Ð²ÐµÑ‚Ð° Ð² Ñ„Ð¾Ñ€Ð¼Ð°Ñ‚Ðµ {Ð¦Ð’Ð•Ð¢_HTML}. ÐŸÑ€Ð¸Ð¼ÐµÑ€ Ð±ÐµÐ»Ð¾Ð³Ð¾ Ñ†Ð²ÐµÑ‚Ð°: {FFFFFF}"))
 
 							imgui.PushItemWidth(150)
-								if imgui.InputText(u8(" Íàçâàíèå øðèôòà"), tableInput["fontMonitor"]) then
+								if imgui.InputText(u8(" ÐÐ°Ð·Ð²Ð°Ð½Ð¸Ðµ ÑˆÑ€Ð¸Ñ„Ñ‚Ð°"), tableInput["fontMonitor"]) then
 									database["settings"]["fontMonitor"] = tableInput["fontMonitor"].v
 									saveDataBase()
 									font = renderCreateFont(database["settings"]["fontMonitor"], tableImInt["sizeMonitor"], 5)
 								end
-								if imgui.InputInt(u8(" Ðàçìåð øðèôòà"), tableImInt["sizeMonitor"]) then
+								if imgui.InputInt(u8(" Ð Ð°Ð·Ð¼ÐµÑ€ ÑˆÑ€Ð¸Ñ„Ñ‚Ð°"), tableImInt["sizeMonitor"]) then
 									database["settings"]["sizeMonitor"] = tableImInt["sizeMonitor"].v
 									saveDataBase()
 									font = renderCreateFont(database["settings"]["fontMonitor"], database["settings"]["sizeMonitor"], 5)
 								end
 							imgui.PopItemWidth()
-							if imgui.Button(u8("Èçìåíèòü ïîëîæåíèå ìîíèòîðèíãà"), imgui.ImVec2(-1, 25)) then
+							if imgui.Button(u8("Ð˜Ð·Ð¼ÐµÐ½Ð¸Ñ‚ÑŒ Ð¿Ð¾Ð»Ð¾Ð¶ÐµÐ½Ð¸Ðµ Ð¼Ð¾Ð½Ð¸Ñ‚Ð¾Ñ€Ð¸Ð½Ð³Ð°"), imgui.ImVec2(-1, 25)) then
 								changePos = true
 								mainMenu.v = false
 							end
 						imgui.EndChild()
 					end
 
-					if imgui.Checkbox(u8(" Ïðîèãðîâàòü çâóê?"), tableCheckbox["activSound"]) then
+					if imgui.Checkbox(u8(" ÐŸÑ€Ð¾Ð¸Ð³Ñ€Ð¾Ð²Ð°Ñ‚ÑŒ Ð·Ð²ÑƒÐº?"), tableCheckbox["activSound"]) then
 						if not doesFileExist(getWorkingDirectory().."/config/gosChecker/sound.mp3") then
 							database["settings"]["activSound"] = false
 							saveDataBase()
-							sampAddChatMessage("[GS]: Íå îáíàðóæåíî ôàéëà sound.mp3. Äîáàâüòå ôàéë ïî ïóòè: /config/gosChecker/sound.mp3", database["settings"]["colorMessage"])
+							sampAddChatMessage("[GS]: ÐÐµ Ð¾Ð±Ð½Ð°Ñ€ÑƒÐ¶ÐµÐ½Ð¾ Ñ„Ð°Ð¹Ð»Ð° sound.mp3. Ð”Ð¾Ð±Ð°Ð²ÑŒÑ‚Ðµ Ñ„Ð°Ð¹Ð» Ð¿Ð¾ Ð¿ÑƒÑ‚Ð¸: /config/gosChecker/sound.mp3", database["settings"]["colorMessage"])
 						else
 							loadSound = loadAudioStream(getWorkingDirectory().."/config/gosChecker/sound.mp3")
 							database["settings"]["activSound"] = tableCheckbox["activSound"].v
@@ -477,12 +477,12 @@ function imgui.OnDrawFrame()
 							imgui.PopItemWidth()
 							imgui.SameLine()
 							imgui.Button("(?)", imgui.ImVec2(25, 20))
-							imgui.Hint(u8("Ãðîìêîñòü ïðîèãðîâàíèÿ çâóêà ïðè ñë¸òå äîìà."))
+							imgui.Hint(u8("Ð“Ñ€Ð¾Ð¼ÐºÐ¾ÑÑ‚ÑŒ Ð¿Ñ€Ð¾Ð¸Ð³Ñ€Ð¾Ð²Ð°Ð½Ð¸Ñ Ð·Ð²ÑƒÐºÐ° Ð¿Ñ€Ð¸ ÑÐ»Ñ‘Ñ‚Ðµ Ð´Ð¾Ð¼Ð°."))
 						imgui.EndChild()
 					end
 
 
-					if imgui.Checkbox(u8(" Âûâîäèòü ñîîáùåíèå?"), tableCheckbox["activMessage"]) then
+					if imgui.Checkbox(u8(" Ð’Ñ‹Ð²Ð¾Ð´Ð¸Ñ‚ÑŒ ÑÐ¾Ð¾Ð±Ñ‰ÐµÐ½Ð¸Ðµ?"), tableCheckbox["activMessage"]) then
 						database["settings"]["activMessage"] = tableCheckbox["activMessage"].v
 						saveDataBase()
 					end
@@ -496,18 +496,18 @@ function imgui.OnDrawFrame()
 							imgui.PopItemWidth()
 							imgui.SameLine()
 							imgui.Button("(?)", imgui.ImVec2(25, 20))
-							imgui.Hint(u8("Òåêñò êîòîðûé áóäåò âûâîäèòñÿ ïðè ñë¸òå äîìà â ÷àò. Èñïîëüçóéòå {COUNTRY} äëÿ âûâîäà ñòðàíû, {LAST_COUNT} - ïîêàçûâàåò ñêîëüêî áûëî äîìîâ äî, {NOW_COUNT} - ïîêàçûâàåò ñêîëüêî ñåé÷àñ äîìîâ. Ìîæíî èñïîëüçîâàòü öâåòà â ôîðìàòå {ÖÂÅÒ_HTML}. Ïðèìåð áåëîãî öâåòà: {FFFFFF}"))
+							imgui.Hint(u8("Ð¢ÐµÐºÑÑ‚ ÐºÐ¾Ñ‚Ð¾Ñ€Ñ‹Ð¹ Ð±ÑƒÐ´ÐµÑ‚ Ð²Ñ‹Ð²Ð¾Ð´Ð¸Ñ‚ÑÑ Ð¿Ñ€Ð¸ ÑÐ»Ñ‘Ñ‚Ðµ Ð´Ð¾Ð¼Ð° Ð² Ñ‡Ð°Ñ‚. Ð˜ÑÐ¿Ð¾Ð»ÑŒÐ·ÑƒÐ¹Ñ‚Ðµ {COUNTRY} Ð´Ð»Ñ Ð²Ñ‹Ð²Ð¾Ð´Ð° ÑÑ‚Ñ€Ð°Ð½Ñ‹, {LAST_COUNT} - Ð¿Ð¾ÐºÐ°Ð·Ñ‹Ð²Ð°ÐµÑ‚ ÑÐºÐ¾Ð»ÑŒÐºÐ¾ Ð±Ñ‹Ð»Ð¾ Ð´Ð¾Ð¼Ð¾Ð² Ð´Ð¾, {NOW_COUNT} - Ð¿Ð¾ÐºÐ°Ð·Ñ‹Ð²Ð°ÐµÑ‚ ÑÐºÐ¾Ð»ÑŒÐºÐ¾ ÑÐµÐ¹Ñ‡Ð°Ñ Ð´Ð¾Ð¼Ð¾Ð². ÐœÐ¾Ð¶Ð½Ð¾ Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ñ‚ÑŒ Ñ†Ð²ÐµÑ‚Ð° Ð² Ñ„Ð¾Ñ€Ð¼Ð°Ñ‚Ðµ {Ð¦Ð’Ð•Ð¢_HTML}. ÐŸÑ€Ð¸Ð¼ÐµÑ€ Ð±ÐµÐ»Ð¾Ð³Ð¾ Ñ†Ð²ÐµÑ‚Ð°: {FFFFFF}"))
 						imgui.EndChild()
 					end
 
 					imgui.BeginChild("#vvv", imgui.ImVec2(335, 35), true)
-					if imgui.Checkbox(u8(" Àâòî-ïîèñê â PayDay"), tableCheckbox["vvvp"]) then
+					if imgui.Checkbox(u8(" ÐÐ²Ñ‚Ð¾-Ð¿Ð¾Ð¸ÑÐº Ð² PayDay"), tableCheckbox["vvvp"]) then
 						database["settings"]["activPayday"] = tableCheckbox["vvvp"].v
 						saveDataBase()
 					end
 						imgui.EndChild()
-						 imgui.Button(u8("*Âåðñèÿ ñ óâåäîìëåíèÿìè â Telegram"), imgui.ImVec2(-1, 0))
-							imgui.Hint(u8"Äàííàÿ âåðñèÿ ñêðèïòà ïîçâîëÿåò óâåäîìëÿòü î ñëåòå äîìà â ÒÃ, ñðàçó ìåæäó íåñêîëüêèìè ïîëüçîâàòåëÿìè, êîòîðûå óæå äîáàâëåíû è ïîäêëþ÷åíû ê áîòó.")
+						 imgui.Button(u8("*Ð’ÐµÑ€ÑÐ¸Ñ Ñ ÑƒÐ²ÐµÐ´Ð¾Ð¼Ð»ÐµÐ½Ð¸ÑÐ¼Ð¸ Ð² Telegram"), imgui.ImVec2(-1, 0))
+							imgui.Hint(u8"Ð”Ð°Ð½Ð½Ð°Ñ Ð²ÐµÑ€ÑÐ¸Ñ ÑÐºÑ€Ð¸Ð¿Ñ‚Ð° Ð¿Ð¾Ð·Ð²Ð¾Ð»ÑÐµÑ‚ ÑƒÐ²ÐµÐ´Ð¾Ð¼Ð»ÑÑ‚ÑŒ Ð¾ ÑÐ»ÐµÑ‚Ðµ Ð´Ð¾Ð¼Ð° Ð² Ð¢Ð“, ÑÑ€Ð°Ð·Ñƒ Ð¼ÐµÐ¶Ð´Ñƒ Ð½ÐµÑÐºÐ¾Ð»ÑŒÐºÐ¸Ð¼Ð¸ Ð¿Ð¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ñ‚ÐµÐ»ÑÐ¼Ð¸, ÐºÐ¾Ñ‚Ð¾Ñ€Ñ‹Ðµ ÑƒÐ¶Ðµ Ð´Ð¾Ð±Ð°Ð²Ð»ÐµÐ½Ñ‹ Ð¸ Ð¿Ð¾Ð´ÐºÐ»ÑŽÑ‡ÐµÐ½Ñ‹ Ðº Ð±Ð¾Ñ‚Ñƒ.")
 				imgui.EndChild()
 			end
 		imgui.End()
@@ -518,7 +518,7 @@ function main()
     if not isSampfuncsLoaded() or not isSampLoaded() then return end
 	while not isSampAvailable() do wait(100) end
 	update()
-	sampAddChatMessage("[GC]: {8be547}×åêåð äîìîâ. /gosmenu - îñíîâíîå ìåíþ, /gos - ïðîñìîòð êîë-âà äîìîâ, /gos [ïàðêèíãè] [öåíà]", -1)
+	sampAddChatMessage("[GC]: {8be547}Ð§ÐµÐºÐµÑ€ Ð´Ð¾Ð¼Ð¾Ð². /gosmenu - Ð¾ÑÐ½Ð¾Ð²Ð½Ð¾Ðµ Ð¼ÐµÐ½ÑŽ, /gos - Ð¿Ñ€Ð¾ÑÐ¼Ð¾Ñ‚Ñ€ ÐºÐ¾Ð»-Ð²Ð° Ð´Ð¾Ð¼Ð¾Ð², /gos [Ð¿Ð°Ñ€ÐºÐ¸Ð½Ð³Ð¸] [Ñ†ÐµÐ½Ð°]", -1)
 
 	lua_thread.create(functionTimer)
 
@@ -527,7 +527,7 @@ function main()
 	if not doesFileExist(getWorkingDirectory().."/config/gosChecker/sound.mp3") then
 		database["settings"]["activSound"] = false
 		saveDataBase()
-		sampAddChatMessage("[GS]: Íå îáíàðóæåíî ôàéëà sound.mp3. Äîáàâüòå ôàéë ïî ïóòè: /config/gosChecker/sound.mp3", database["settings"]["colorMessage"])
+		sampAddChatMessage("[GS]: ÐÐµ Ð¾Ð±Ð½Ð°Ñ€ÑƒÐ¶ÐµÐ½Ð¾ Ñ„Ð°Ð¹Ð»Ð° sound.mp3. Ð”Ð¾Ð±Ð°Ð²ÑŒÑ‚Ðµ Ñ„Ð°Ð¹Ð» Ð¿Ð¾ Ð¿ÑƒÑ‚Ð¸: /config/gosChecker/sound.mp3", database["settings"]["colorMessage"])
 	else
 		loadSound = loadAudioStream(getWorkingDirectory().."/config/gosChecker/sound.mp3")
 	end
@@ -542,12 +542,12 @@ function main()
 					activationScript, checkAllHouse[1], gosCheckerMessage = true, true, true
 					sampSendChat("/call realty")
 				else
-					sampAddChatMessage("[GC]: {8be547}Çàêðîéòå àêòèâíûå äèàëîãè.", -1)
+					sampAddChatMessage("[GC]: {8be547}Ð—Ð°ÐºÑ€Ð¾Ð¹Ñ‚Ðµ Ð°ÐºÑ‚Ð¸Ð²Ð½Ñ‹Ðµ Ð´Ð¸Ð°Ð»Ð¾Ð³Ð¸.", -1)
 				end
 			elseif text ~= "" and getCharActiveInterior(PLAYER_PED) ~= 0 then
-				return sampAddChatMessage("[GC]: {8be547}Âû íå ìîæåòå èñïîëüçîâàòü ýòó ôóíêöèþ, íàõîäÿñü â èíòåðüåðå.", -1)
+				return sampAddChatMessage("[GC]: {8be547}Ð’Ñ‹ Ð½Ðµ Ð¼Ð¾Ð¶ÐµÑ‚Ðµ Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ñ‚ÑŒ ÑÑ‚Ñƒ Ñ„ÑƒÐ½ÐºÑ†Ð¸ÑŽ, Ð½Ð°Ñ…Ð¾Ð´ÑÑÑŒ Ð² Ð¸Ð½Ñ‚ÐµÑ€ÑŒÐµÑ€Ðµ.", -1)
 			elseif not parks or not price or parks >= "3" and price ~= "%-" then
-				return sampAddChatMessage("[GC]: {8be547}Ââîäèòå ïðàâèëüíî: /gos (êîë-âî ïàðêîâîê äî 3õ) (wåíà îò-äî)", -1)
+				return sampAddChatMessage("[GC]: {8be547}Ð’Ð²Ð¾Ð´Ð¸Ñ‚Ðµ Ð¿Ñ€Ð°Ð²Ð¸Ð»ÑŒÐ½Ð¾: /gos (ÐºÐ¾Ð»-Ð²Ð¾ Ð¿Ð°Ñ€ÐºÐ¾Ð²Ð¾Ðº Ð´Ð¾ 3Ñ…) (wÐµÐ½Ð° Ð¾Ñ‚-Ð´Ð¾)", -1)
 			end
 			if parksMin ~= 0 and priceRange ~= 0 and text ~= "" and not getCharActiveInterior(PLAYER_PED) ~= 0 and price:find("%-") then
 				if priceRange:find("x") then
@@ -609,11 +609,11 @@ function saveDataBase()
 	configFile:close()
 end
 
--- // Ìàðêåð â IMGUI
+-- // ÐœÐ°Ñ€ÐºÐµÑ€ Ð² IMGUI
 function imgui.Hint(text, delay)
     if imgui.IsItemHovered() then
         if go_hint == nil then go_hint = os.clock() + (delay and delay or 0.0) end
-        local alpha = (os.clock() - go_hint) * 5 -- ñêîðîñòü ïîÿâëåíèÿ
+        local alpha = (os.clock() - go_hint) * 5 -- ÑÐºÐ¾Ñ€Ð¾ÑÑ‚ÑŒ Ð¿Ð¾ÑÐ²Ð»ÐµÐ½Ð¸Ñ
         if os.clock() >= go_hint then
             imgui.PushStyleVar(imgui.StyleVar.Alpha, (alpha <= 1.0 and alpha or 1.0))
                 imgui.PushStyleColor(imgui.Col.PopupBg, imgui.GetStyle().Colors[imgui.Col.ButtonHovered])
