@@ -1,4 +1,4 @@
-script_version("3.3")
+script_version("3.4")
 script_version_number(16)
 require "lib.moonloader"
 local sampev 		= require "lib.samp.events" -- // Евенты
@@ -585,12 +585,6 @@ function main()
 	else
 		loadSound = loadAudioStream(getWorkingDirectory().."/config/gosChecker/sound.mp3")
 	end
-
-	sampRegisterChatCommand("play", function()
-	end)
-	sampRegisterChatCommand("sliv", function()
-		sampSendChat("/play")
-	end)
 
 	sampRegisterChatCommand("afkgos", function()
 	afkgos = not afkgos
