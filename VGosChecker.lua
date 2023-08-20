@@ -1,4 +1,4 @@
-script_version("4.0")
+script_version("4.4")
 script_version_number(16)
 require "lib.moonloader"
 local sampev 		= require "lib.samp.events" -- // Евенты
@@ -848,8 +848,8 @@ end
 
 function sampev.onSetCheckpoint(pos, rad)
 	lua_thread.create(function()
-		wait(1000)
 	if houseInGos then
+		wait(1000)
     if race_cp ~= nil then deleteCheckpoint(race_cp) end
     race_cp = createCheckpoint(2, pos.x, pos.y, pos.z, 0.0, 0.0, 0.0, rad)
     cp_coords = {pos.x, pos.y, pos.z}
@@ -980,8 +980,8 @@ end
 end)
 		cordHouseCoint = 0
 		houseInGos = false
-		deleteCheckpoint(race_cp)
-		race_cp = nil
+		--deleteCheckpoint(race_cp)
+		--race_cp = nil
 end
 
 function functionTimer()
