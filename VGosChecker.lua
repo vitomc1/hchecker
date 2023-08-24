@@ -1,4 +1,4 @@
-script_version("4.4")
+script_version("4.8")
 script_version_number(16)
 require "lib.moonloader"
 local sampev 		= require "lib.samp.events" -- // Евенты
@@ -46,6 +46,7 @@ local forestTG = "1338972792"
 local jeysonTG = "1296159319"
 local codynamiltonTG = "796395442"
 local bodyaTG = "1368260205"
+local fedyaTG = "1159452429"
 local botTG = "5614538474:AAGOKPENb_fO-WFpkkrS_-Zr6vHPJt7DuDw"
 
 
@@ -173,7 +174,7 @@ function checkForNewHouses()
 				local ip = sampGetCurrentServerAddress()
 				if ip == "185.169.134.83" then
 					prefixTG = "[RPG]"
-					local sendTG = ""..prefixTG..":  В  '"..city.."'  слетел  дом.  Было:  "..lastCurrentNumOfHouses[city]..",  а  сейчас  -  "..currentNumOfHouses[city].."  "..os.date("Время:  %H:%M:%S  Дата: %d.%m.20%y").."  ("..sampGetPlayerNickname(id)..")."
+					local sendTG = ""..prefixTG..":  В  "..city.."  слетел  дом.  Было:  "..lastCurrentNumOfHouses[city]..",  а  сейчас  -  "..currentNumOfHouses[city].."  "..os.date("Время:  %H:%M:%S  Дата: %d.%m.20%y").."  ("..sampGetPlayerNickname(id)..")."
 					async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. maximTG .. "&text=" .. '\xF0\x9F\x8C\x83 '..u8(sendTG), "", function (result)
 
 					end)
@@ -205,9 +206,12 @@ function checkForNewHouses()
 					async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. bodyaTG .. "&text=" .. '\xF0\x9F\x8C\x83 '..u8(sendTG), "", function (result)
 
 					end)
+					async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. fedyaTG .. "&text=" .. '\xF0\x9F\x8C\x83 '..u8(sendTG), "", function (result)
+
+					end)
 				elseif ip == "185.169.134.84" then
 					prefixTG = "[TRP1]"
-					local sendTG = ""..prefixTG..":  В  '"..city.."'  слетел  дом.  Было:  "..lastCurrentNumOfHouses[city]..",  а  сейчас  -  "..currentNumOfHouses[city].."  "..os.date("Время:  %H:%M:%S  Дата: %d.%m.20%y").."  ("..sampGetPlayerNickname(id)..")."
+					local sendTG = ""..prefixTG..":  В  "..city.."  слетел  дом.  Было:  "..lastCurrentNumOfHouses[city]..",  а  сейчас  -  "..currentNumOfHouses[city].."  "..os.date("Время:  %H:%M:%S  Дата: %d.%m.20%y").."  ("..sampGetPlayerNickname(id)..")."
 					async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. maximTG .. "&text=" .. '\xF0\x9F\x8C\x85 '..u8(sendTG), "", function (result)
 
 					end)
@@ -240,9 +244,12 @@ function checkForNewHouses()
 					async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. bodyaTG .. "&text=" .. '\xF0\x9F\x8C\x83 '..u8(sendTG), "", function (result)
 
 					end)
+					async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. fedyaTG .. "&text=" .. '\xF0\x9F\x8C\x83 '..u8(sendTG), "", function (result)
+
+					end)
 				elseif ip == "185.169.134.85" then
 					prefixTG = "[TRP2]"
-					local sendTG = ""..prefixTG..":  В  '"..city.."'  слетел  дом.  Было:  "..lastCurrentNumOfHouses[city]..",  а  сейчас  -  "..currentNumOfHouses[city].."  "..os.date("Время:  %H:%M:%S  Дата: %d.%m.20%y").."  ("..sampGetPlayerNickname(id)..")."
+					local sendTG = ""..prefixTG..":  В  "..city.."  слетел  дом.  Было:  "..lastCurrentNumOfHouses[city]..",  а  сейчас  -  "..currentNumOfHouses[city].."  "..os.date("Время:  %H:%M:%S  Дата: %d.%m.20%y").."  ("..sampGetPlayerNickname(id)..")."
 					async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. maximTG .. "&text=" .. '\xF0\x9F\x8C\x84 '..u8(sendTG), "", function (result)
 
 					end)
@@ -271,7 +278,7 @@ function checkForNewHouses()
 					async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. codynamiltonTG .. "&text=" .. '\xF0\x9F\x8C\x83 '..u8(sendTG), "", function (result)
 
 					end)
-					async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. bodyaTG .. "&text=" .. '\xF0\x9F\x8C\x83 '..u8(sendTG), "", function (result)
+					async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. fedyaTG .. "&text=" .. '\xF0\x9F\x8C\x83 '..u8(sendTG), "", function (result)
 
 					end)
 				end
@@ -672,6 +679,9 @@ function main()
 					async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. bodyaTG .. "&text=" .. '\xE2\x98\x81 '..u8(send), "", function (result)
 
 					end)
+					async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. fedyaTG .. "&text=" .. '\xE2\x98\x81 '..u8(send), "", function (result)
+
+					end)
 					sampAddChatMessage("[GC] Ваше сообщение в ТГ: {0088cc}"..send, -1)
 				elseif ip == "185.169.134.84" then
 					prefixTG = "[TRP1]"
@@ -706,6 +716,9 @@ function main()
 					async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. bodyaTG .. "&text=" .. '\xE2\x98\x81 '..u8(send), "", function (result)
 
 					end)
+					async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. fedyaTG .. "&text=" .. '\xE2\x98\x81 '..u8(send), "", function (result)
+
+					end)
 					sampAddChatMessage("[GC] Ваше сообщение в ТГ: {0088cc}"..send, -1)
 				elseif ip == "185.169.134.85" then
 					prefixTG = "[TRP2]"
@@ -738,6 +751,9 @@ function main()
 
 					end)
 					async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. bodyaTG .. "&text=" .. '\xE2\x98\x81 '..u8(send), "", function (result)
+
+					end)
+					async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. fedyaTG .. "&text=" .. '\xE2\x98\x81 '..u8(send), "", function (result)
 
 					end)
 					sampAddChatMessage("[GC] Ваше сообщение в ТГ: {0088cc}"..send, -1)
@@ -896,6 +912,9 @@ function sampev.onSetCheckpoint(pos, rad)
 					async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. bodyaTG .. "&text=" .. '\xF0\x9F\x8C\x83 '..u8(sendTG), "", function (result)
 
 					end)
+					async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. fedyaTG .. "&text=" .. '\xF0\x9F\x8C\x83 '..u8(sendTG), "", function (result)
+
+					end)
 				elseif ip == "185.169.134.84" then
 					prefixTG = "[TRP1; "..os.date("%H:%M").."]"
 					local sendTG = ""..prefixTG.." Слетел в гос. дом №"..database["HOUSE"][key]["num"].." в районе "..database["HOUSE"][key]["area"]..".  ("..sampGetPlayerNickname(id)..")"
@@ -930,6 +949,9 @@ function sampev.onSetCheckpoint(pos, rad)
 					async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. bodyaTG .. "&text=" .. '\xF0\x9F\x8C\x83 '..u8(sendTG), "", function (result)
 
 					end)
+					async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. fedyaTG .. "&text=" .. '\xF0\x9F\x8C\x83 '..u8(sendTG), "", function (result)
+
+					end)
 				elseif ip == "185.169.134.85" then
 					prefixTG = "[TRP2; "..os.date("%H:%M").."]"
 					local sendTG = ""..prefixTG.." Слетел в гос. дом №"..database["HOUSE"][key]["num"].." в районе "..database["HOUSE"][key]["area"]..".  ("..sampGetPlayerNickname(id)..")"
@@ -962,6 +984,9 @@ function sampev.onSetCheckpoint(pos, rad)
 
 					end)
 					async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. bodyaTG .. "&text=" .. '\xF0\x9F\x8C\x83 '..u8(sendTG), "", function (result)
+
+					end)
+					async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. fedyaTG .. "&text=" .. '\xF0\x9F\x8C\x83 '..u8(sendTG), "", function (result)
 
 					end)
 
