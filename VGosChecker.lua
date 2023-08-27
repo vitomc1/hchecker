@@ -1,4 +1,4 @@
-script_version("4.8")
+script_version("5.0")
 script_version_number(16)
 require "lib.moonloader"
 local sampev 		= require "lib.samp.events" -- // Евенты
@@ -384,23 +384,13 @@ function sampev.onShowDialog(id, style, title, btn1, btn2, text)
 			checkInGosHouse[3], checkInGosHouse[4] = false, true
 			return false
 		end
-		if checkInGosHouse[4] and id == 2114 then
-			sampSendDialogResponse(2114, 1, 36, "")
+		if checkInGosHouse[4] and id == 2116 then
+			sampSendDialogResponse(2116, 1, 0, parksMin)
 			checkInGosHouse[4], checkInGosHouse[5] = false, true
 			return false
 		end
-		if checkInGosHouse[5] and id == 2114 then
-			sampSendDialogResponse(2114, 1, 38, "")
-			checkInGosHouse[5], checkInGosHouse[6] = false, true
-			return false
-		end
-		if checkInGosHouse[6] and id == 2116 then
-			sampSendDialogResponse(2116, 1, 0, parksMin)
-			checkInGosHouse[6], checkInGosHouse[7] = false, true
-			return false
-		end
-		if checkInGosHouse[7] and id == 2118 then
-			checkInGosHouse[7], checkInGosHouse[8], checkInGosHouse[9] = false, true, true
+		if checkInGosHouse[5] and id == 2118 then
+			checkInGosHouse[5], checkInGosHouse[6], checkInGosHouse[7] = false, true, true
 			if xfunc then
 				lua_thread.create(function()
 					priceRange = priceRange:match("(%d+%-%d+).*")
@@ -414,18 +404,18 @@ function sampev.onShowDialog(id, style, title, btn1, btn2, text)
 				return false
 			end
 		end
-		if checkInGosHouse[8] and id == 2111 and text:find("По вашему запросу не найдено") then
+		if checkInGosHouse[6] and id == 2111 and text:find("По вашему запросу не найдено") then
 			sampAddChatMessage("[GC]: {8be547}По вашему запросу не найдено ни одного предложения о продаже.", -1)
 			sampSendDialogResponse(2111, 1, 0, "")
-			checkInGosHouse[8], checkInGosHouse[9], closeDialog = false, false, true
+			checkInGosHouse[6], checkInGosHouse[7], closeDialog = false, false, true
 			return false
 		end
-		if checkInGosHouse[9] and id == 2111 and text:find("По вашему запросу найдено") then
+		if checkInGosHouse[7] and id == 2111 and text:find("По вашему запросу найдено") then
 			local kolvoGosHouse = text:match("{fbec5d}(%d+){ffffff}")
 			sampSendDialogResponse(2111, 1, 0, "")
 			sampAddChatMessage("[GC]: {8be547}По вашему запросу найдено {FFFFFF}"..kolvoGosHouse.. "{8be547} предложений. Ближайшее к вам отмечено на радаре.", -1)
 
-			checkInGosHouse[8], checkInGosHouse[9], closeDialog = false, false, true
+			checkInGosHouse[6], checkInGosHouse[7], closeDialog = false, false, true
 			houseInGos = true
 			return false
 		end
