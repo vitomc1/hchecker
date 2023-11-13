@@ -1,4 +1,4 @@
-script_version("5.2")
+script_version("5.3")
 script_version_number(16)
 require "lib.moonloader"
 local sampev 		= require "lib.samp.events" -- // Евенты
@@ -986,7 +986,7 @@ function sampev.onSetCheckpoint(pos, rad)
 					async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. maximTG .. "&text=" .. '\xF0\x9F\x8C\x84 '..u8(sendTG), "", function (result)
 
 					end)
-				--[[	async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. andreyTG .. "&text=" .. '\xF0\x9F\x8C\x84 '..u8(sendTG), "", function (result)
+					async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. andreyTG .. "&text=" .. '\xF0\x9F\x8C\x84 '..u8(sendTG), "", function (result)
 
 					end)
 					async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. tomasTG .. "&text=" .. '\xF0\x9F\x8C\x84 '..u8(sendTG), "", function (result)
@@ -1020,7 +1020,7 @@ function sampev.onSetCheckpoint(pos, rad)
 
 					async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. stangelTG .. "&text=" .. '\xF0\x9F\x8C\x83 '..u8(sendTG), "", function (result)
 
-					end)--]]
+					end)
 
 
 				end
