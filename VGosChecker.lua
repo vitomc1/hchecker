@@ -1,4 +1,4 @@
-script_version("5.1")
+script_version("5.2")
 script_version_number(16)
 require "lib.moonloader"
 local sampev 		= require "lib.samp.events" -- // Евенты
@@ -842,6 +842,11 @@ function main()
 
 	while true do wait(0)
 
+		if houseInGos then
+			wait(1111)
+			houseInGos = false
+		end
+
 		if TextHouse.v then
 		for key, val in pairs(database["HOUSE"]) do
 				xM, yM, zM = getCharCoordinates(PLAYER_PED)
@@ -879,8 +884,8 @@ end
 
 function sampev.onSetCheckpoint(pos, rad)
 	lua_thread.create(function()
+		wait(0)
 	if houseInGos then
-		wait(1000)
     if race_cp ~= nil then deleteCheckpoint(race_cp) end
     race_cp = createCheckpoint(2, pos.x, pos.y, pos.z, 0.0, 0.0, 0.0, rad)
     cp_coords = {pos.x, pos.y, pos.z}
@@ -981,7 +986,7 @@ function sampev.onSetCheckpoint(pos, rad)
 					async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. maximTG .. "&text=" .. '\xF0\x9F\x8C\x84 '..u8(sendTG), "", function (result)
 
 					end)
-					async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. andreyTG .. "&text=" .. '\xF0\x9F\x8C\x84 '..u8(sendTG), "", function (result)
+				--[[	async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. andreyTG .. "&text=" .. '\xF0\x9F\x8C\x84 '..u8(sendTG), "", function (result)
 
 					end)
 					async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. tomasTG .. "&text=" .. '\xF0\x9F\x8C\x84 '..u8(sendTG), "", function (result)
@@ -1015,7 +1020,7 @@ function sampev.onSetCheckpoint(pos, rad)
 
 					async_http_request("https://api.telegram.org/bot" .. botTG .. "/sendMessage?chat_id=" .. stangelTG .. "&text=" .. '\xF0\x9F\x8C\x83 '..u8(sendTG), "", function (result)
 
-					end)
+					end)--]]
 
 
 				end
@@ -1025,9 +1030,9 @@ function sampev.onSetCheckpoint(pos, rad)
 				abs = sampCreate3dText("{80A6FF}*** ДОМ В ГОС ***\n\n{ffffff}Дом №"..database["HOUSE"][key]["num"].." {8be547}|{ffffff} Район "..database["HOUSE"][key]["area"], 0xFFffffff, database["HOUSE"][key]["posX"], database["HOUSE"][key]["posY"], database["HOUSE"][key]["posZ"], 50000, true, -1, -1)
 				ds = getDistanceBetweenCoords2d(xM, yM, database["HOUSE"][key]["posX"], database["HOUSE"][key]["posY"])
 			end
-			end
 		end
 
+end
 end
 end)
 		cordHouseCoint = 0
@@ -1075,7 +1080,7 @@ function imgui.Hint(text, delay)
 end
 
 function sampev.onSetObjectMaterialText(id, data)
-	if tostring(data.text):find('^%d+  %d+\n\n{ffffff}Владелец:{fbec5d} .*') then
+	if tostring(data.text):find('^%d+  %d+.*\n\n{ffffff}Владелец:{fbec5d} .*') then
 		local crdFlat, crdFalatX, crdFalatY, crdFalatZ = getObjectCoordinates(sampGetObjectHandleBySampId(id))
 		local text = tostring(data.text)
 		local num, park, owner = tostring(data.text):match("^(%d+)  (%d+)\n\n{ffffff}Владелец:{fbec5d} (%S+)")
@@ -1090,7 +1095,7 @@ function sampev.onSetObjectMaterialText(id, data)
 			saveDataBase()
 		end
 	end
-	if tostring(data.text):find('^%d+  %d+\n\n{ffffff}Это жилье продается за {33aa33}.* %${ffffff}.') then
+	if tostring(data.text):find('^%d+  %d+.*\n\n{ffffff}Это жилье продается за {33aa33}.* %${ffffff}.') then
 		local crdFlat, crdFalatX, crdFalatY, crdFalatZ = getObjectCoordinates(sampGetObjectHandleBySampId(id))
 		local text = tostring(data.text)
 		local num, park = tostring(data.text):match("^(%d+)  (%d+)\n\n{ffffff}Это жилье продается за {33aa33}.* %${ffffff}")
@@ -1108,7 +1113,7 @@ function sampev.onSetObjectMaterialText(id, data)
 end
 
 function sampev.onCreate3DText(id, color, pos, distance, testLOS, attachedPlayerId, attachedVehicleId, text)
-			if text:find("^%d+  %d+\n\n{ffffff}Владелец:{fbec5d} .*") then
+			if text:find("^%d+  %d+.*\n\n{ffffff}Владелец:{fbec5d} .*") then
 	 			local num, park, owner = text:match("^(%d+)  (%d+)\n\n{ffffff}Владелец:{fbec5d} (%S+)")
 				--sampAddChatMessage(pos.x.." "..pos.y.." "..pos.z, -1)
 				if not CheckGps(num) then
@@ -1122,7 +1127,7 @@ function sampev.onCreate3DText(id, color, pos, distance, testLOS, attachedPlayer
 				 	saveDataBase()
 				end
 			end
-			if text:find("^%d+  %d+\n\n{ffffff}Это жилье продается за {33aa33}.* %${ffffff}.") then
+			if text:find("^%d+  %d+.*\n\n{ffffff}Это жилье продается за {33aa33}.* %${ffffff}.") then
 				local num, park = text:match("^(%d+)  (%d+)\n\n{ffffff}Это жилье продается за {33aa33}.* %${ffffff}.")
 				if not CheckGps(num) then
 					table.insert(database["HOUSE"], {
